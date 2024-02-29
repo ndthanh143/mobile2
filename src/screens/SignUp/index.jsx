@@ -40,13 +40,6 @@ export function SignUpScreen({navigation}) {
     formState: {errors},
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {
-      fullName: 'Duy Thanh',
-      birthday: '1990-01-01',
-      phone: '0315123213',
-      email: 'thanhnduy143@gmail.com',
-      password: 'thanh123',
-    },
   });
 
   const [showOTPModal, setShowOTPModal] = useState(false);

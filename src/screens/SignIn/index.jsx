@@ -24,14 +24,6 @@ const schema = object({
 });
 
 export function SignInScreen({navigation}) {
-  const showAlert = () => {
-    Alert.alert({
-      title: 'Đăng nhập thành công!',
-      description: 'Chào mừng bạn tới chợ đồ công nghệ lớn nhất Việt Nam.',
-      status: 'success',
-    });
-  };
-
   const {
     control,
     handleSubmit,
@@ -40,17 +32,12 @@ export function SignInScreen({navigation}) {
     resolver: yupResolver(schema),
   });
 
-  const {mutate} = useMutation({
+  const {mutate, isError} = useMutation({
     mutationFn: payload => authApi.signIn(payload),
     onSuccess: () => {
-      showAlert();
-      //   navigation.navigate('Home');
-
-      // Show success alert
+      navigation.navigate('Home');
     },
-    onError: () => {
-      showAlert();
-    },
+    onError: () => {},
   });
 
   const onSubmit = data => {
@@ -113,6 +100,11 @@ export function SignInScreen({navigation}) {
             {errors.password && (
               <Text color="red" fontSize="xs">
                 {errors.password.message}
+              </Text>
+            )}
+            {isError && ( // Render error message if there's an error
+              <Text color="red" fontSize="xs">
+                Đăng nhập không thành công. Vui lòng thử lại.
               </Text>
             )}
             <Link

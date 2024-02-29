@@ -131,6 +131,7 @@ export function ForgotPasswordScreen({navigation}) {
             />
             <Input
               placeholder="Mật khẩu mới"
+              type="password"
               value={newPassword}
               onChangeText={e => setNewPassword(e)}
             />
