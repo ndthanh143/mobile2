@@ -122,7 +122,8 @@ export function SignInScreen({navigation}) {
                 color: 'indigo.500',
               }}
               alignSelf="flex-end"
-              mt="1">
+              mt="1"
+              onPress={() => navigation.navigate('Forgot Password')}>
               Quên mật khẩu?
             </Link>
           </FormControl>
