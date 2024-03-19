@@ -9,6 +9,8 @@ export const userApi = {
     window.Buffer = window.Buffer || Buffer;
     const base64Credentials =
       Buffer.from(`abc_client:abc123`).toString('base64');
+
+    console.log('payload', payload);
     try {
       const {data} = await axios.post(
         `https://tech-market.space/v1/user/signup`,

@@ -37,6 +37,7 @@ export function SignUpScreen({navigation}) {
   const {
     control,
     handleSubmit,
+    register,
     formState: {errors},
   } = useForm({
     resolver: yupResolver(schema),
@@ -63,6 +64,8 @@ export function SignUpScreen({navigation}) {
 
   const onSubmit = data => {
     const {birthday, ...rest} = data;
+
+    console.log('data', data);
 
     mutate({...rest});
   };
@@ -101,7 +104,9 @@ export function SignUpScreen({navigation}) {
             <FormControl.Label>Họ và tên</FormControl.Label>
             <Controller
               control={control}
-              render={({field}) => <Input {...field} />}
+              render={({field: {onChange, onBlur, value}}) => (
+                <Input onChangeText={onChange} onBlur={onBlur} value={value} />
+              )}
               name="fullName"
             />
             <Text color="red" fontSize="xs">
@@ -112,7 +117,9 @@ export function SignUpScreen({navigation}) {
             <FormControl.Label>Ngày sinh</FormControl.Label>
             <Controller
               control={control}
-              render={({field}) => <Input {...field} />}
+              render={({field: {onChange, onBlur, value}}) => (
+                <Input onChangeText={onChange} onBlur={onBlur} value={value} />
+              )}
               name="birthday"
             />
             <Text color="red" fontSize="xs">
@@ -123,7 +130,9 @@ export function SignUpScreen({navigation}) {
             <FormControl.Label>Số điện thoại</FormControl.Label>
             <Controller
               control={control}
-              render={({field}) => <Input {...field} />}
+              render={({field: {onChange, onBlur, value}}) => (
+                <Input onChangeText={onChange} onBlur={onBlur} value={value} />
+              )}
               name="phone"
             />
             <Text color="red" fontSize="xs">
@@ -134,7 +143,9 @@ export function SignUpScreen({navigation}) {
             <FormControl.Label>Email</FormControl.Label>
             <Controller
               control={control}
-              render={({field}) => <Input {...field} />}
+              render={({field: {onChange, onBlur, value}}) => (
+                <Input onChangeText={onChange} onBlur={onBlur} value={value} />
+              )}
               name="email"
             />
             <Text color="red" fontSize="xs">
@@ -145,7 +156,9 @@ export function SignUpScreen({navigation}) {
             <FormControl.Label>Mật khẩu</FormControl.Label>
             <Controller
               control={control}
-              render={({field}) => <Input {...field} secureTextEntry />}
+              render={({field: {onChange, onBlur, value}}) => (
+                <Input onChangeText={onChange} onBlur={onBlur} value={value} />
+              )}
               name="password"
             />
             <Text color="red" fontSize="xs">

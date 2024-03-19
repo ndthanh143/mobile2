@@ -1,6 +1,7 @@
-import axios from 'axios';
-import {axiosInstance} from '../axios';
+import {API_URL, axiosInstance} from '../axios';
 import {Buffer} from 'buffer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export const authApi = {
   signIn: async ({phone, password, grant_type = 'user'}) => {
@@ -8,29 +9,25 @@ export const authApi = {
     const base64Credentials =
       Buffer.from(`abc_client:abc123`).toString('base64');
 
-    console.log('base64Credentials', base64Credentials);
-    try {
-      const {data} = await axiosInstance.post(
-        'api/token',
-        {
-          phone,
-          password,
-          grant_type,
-        },
-        {
-          headers: {
-            // Add your headers here
-            Authorization: 'Basic ' + base64Credentials,
-            // You can add other headers like authorization token if needed
-          },
-        },
-      );
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
+    console.log(phone, password, grant_type);
 
-    console.log('data', data);
+    const {data} = await axios.post(
+      `${API_URL}/api/token`,
+      {
+        phone,
+        password,
+        grant_type,
+      },
+      {
+        headers: {
+          Authorization: 'Basic ' + base64Credentials,
+        },
+      },
+    );
+
+    await AsyncStorage.setItem('access_token', data.access_token);
+
+    return data;
   },
   requestForgotPassword: async payload => {
     const {data} = await axiosInstance.post(
@@ -51,6 +48,22 @@ export const authApi = {
       return data;
     } catch (err) {
       console.log(err);
+    }
+  },
+  getProfile: async () => {
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+
+      const {data} = await axiosInstance.get('v1/account/profile', {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      });
+
+      return data.data;
+    } catch (error) {
+      console.log(error);
+      return {};
     }
   },
 };

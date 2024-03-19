@@ -1,6 +1,5 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
-  Alert,
   Box,
   Button,
   Center,
@@ -15,8 +14,7 @@ import {Text} from 'react-native';
 import {object, string} from 'yup';
 import {useForm, Controller} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
-import {useMutation} from '@tanstack/react-query';
-import {authApi} from '../../apis';
+import {useAuth} from '../../hooks';
 
 const schema = object({
   phone: string().required(),
@@ -30,19 +28,25 @@ export function SignInScreen({navigation}) {
     formState: {errors},
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      phone: '0966355046',
+      password: '123456789',
+    },
   });
 
-  const {mutate, isError} = useMutation({
-    mutationFn: payload => authApi.signIn(payload),
-    onSuccess: () => {
-      navigation.navigate('Home');
-    },
-    onError: () => {},
-  });
+  const {profile, login, isLoginError, isLoginLoading} = useAuth();
 
   const onSubmit = data => {
-    mutate(data);
+    login(data);
   };
+
+  console.log('isLoginLoading', isLoginLoading);
+
+  useEffect(() => {
+    if (profile) {
+      navigation.navigate('Home');
+    }
+  }, [profile, login, isLoginLoading, navigation]);
 
   return (
     <Center w="100%">
@@ -102,7 +106,7 @@ export function SignInScreen({navigation}) {
                 {errors.password.message}
               </Text>
             )}
-            {isError && ( // Render error message if there's an error
+            {isLoginError && ( // Render error message if there's an error
               <Text color="red" fontSize="xs">
                 Đăng nhập không thành công. Vui lòng thử lại.
               </Text>
@@ -123,6 +127,8 @@ export function SignInScreen({navigation}) {
             mt="2"
             colorScheme="red"
             borderRadius="3xl"
+            isLoading={isLoginLoading}
+            isDisabled={isLoginLoading}
             onPress={handleSubmit(onSubmit)}>
             Đăng nhập
           </Button>

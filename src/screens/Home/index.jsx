@@ -1,47 +1,98 @@
-import {Box, Center, FlatList, Spinner} from 'native-base';
-import {Text} from 'react-native';
+import {
+  Box,
+  Button,
+  Center,
+  FlatList,
+  Image,
+  ScrollView,
+  Spinner,
+} from 'native-base';
+import {Text as Text2} from 'native-base';
+
 import Card from '../../container/card';
 import {useEffect, useState} from 'react';
+import {useMutation, useQuery} from '@tanstack/react-query';
+import {productApi} from '../../apis';
+import {useAuth} from '../../hooks';
 
-export function HomeScreen() {
-  const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState([]);
+export function HomeScreen({navigation}) {
+  const {data: products, isLoading} = useQuery({
+    queryKey: ['products'],
+    queryFn: () => productApi.getProducts(),
+  });
 
-  useEffect(() => {
-    // Thực hiện gọi API để lấy danh sách sản phẩm
-    fetch('https://tech-market.space/v1/product/auto-complete')
-      .then(response => response.json())
-      .then(data => {
-        setProducts(data.data);
-        setLoading(false);
-      })
-      .catch(error => console.error('Error fetching products:', error));
-  }, []);
+  const {logout} = useAuth();
 
-  console.log(products);
+  const handleLogout = () => {
+    logout();
+    navigation.navigate('Sign In');
+  };
+
   return (
-    <Center w="100%">
-      {loading ? (
-        <Spinner color="red.500" />
-      ) : (
-        <FlatList
-          data={products}
-          mt={5}
-          keyExtractor={item => item.id.toString()}
-          renderItem={({item}) => (
-            // <Box borderWidth={1} p={2} my={2} borderRadius={8}>
-            //   <Text>{item.name}</Text>
-            //   <Text fontSize="sm" mt={1}>
-            //     {item.description}
-            //   </Text>
-            //   <Text fontSize="lg" fontWeight="bold" mt={2}>
-            //     ${item.price}
-            //   </Text>
-            // </Box>
-            <Card data={item} />
+    <ScrollView>
+      <Button onPress={handleLogout}>Logout</Button>
+      <Box backgroundColor="white">
+        <Center w="100%">
+          {isLoading ? (
+            <Box
+              flex={1}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              py={10}
+              height="100vh">
+              <Spinner color="red.500" size="lg" />
+            </Box>
+          ) : (
+            <>
+              <Text2
+                fontSize="2xl"
+                fontWeight="extrabold"
+                color="orange.500"
+                textAlign="left"
+                py={2}>
+                Tech Market
+              </Text2>
+              <Box width="full">
+                <Image
+                  source={{
+                    uri: 'https://img.freepik.com/premium-psd/horizontal-web-banner-with-laptop-laptop-mockup_451189-71.jpg',
+                  }}
+                  alt="Product Banner"
+                  resizeMode="cover"
+                  width="full"
+                  height={200} // Adjust height as needed
+                  mb={2}
+                />
+              </Box>
+              <Text2
+                fontSize="2xl"
+                fontWeight="extrabold"
+                textAlign="left"
+                py={2}>
+                Danh sách sản phẩm
+              </Text2>
+              <FlatList
+                data={products}
+                mt={5}
+                keyExtractor={item => item.id.toString()}
+                renderItem={({item}) => (
+                  // <Box borderWidth={1} p={2} my={2} borderRadius={8}>
+                  //   <Text>{item.name}</Text>
+                  //   <Text fontSize="sm" mt={1}>
+                  //     {item.description}
+                  //   </Text>
+                  //   <Text fontSize="lg" fontWeight="bold" mt={2}>
+                  //     ${item.price}
+                  //   </Text>
+                  // </Box>
+                  <Card data={item} />
+                )}
+              />
+            </>
           )}
-        />
-      )}
-    </Center>
+        </Center>
+      </Box>
+    </ScrollView>
   );
 }
