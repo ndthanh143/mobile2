@@ -3,9 +3,15 @@ import {
   Button,
   Center,
   FlatList,
+  HStack,
+  HamburgerIcon,
+  IconButton,
   Image,
+  Pressable,
   ScrollView,
+  SearchIcon,
   Spinner,
+  View,
 } from 'native-base';
 import {Text as Text2} from 'native-base';
 
@@ -30,8 +36,22 @@ export function HomeScreen({navigation}) {
 
   return (
     <ScrollView>
-      <Button onPress={handleLogout}>Logout</Button>
       <Box backgroundColor="white">
+        <HStack
+          // space={[2, 3]}
+          justifyContent="space-between"
+          alignItems="center">
+          <IconButton size="lg">
+            <HamburgerIcon />
+          </IconButton>
+          <Text2 fontSize="2xl" fontWeight="extrabold" color="orange.500">
+            Tech Market
+          </Text2>
+          <Pressable onPress={() => navigation.navigate('Search')}>
+            <SearchIcon size="4" />
+          </Pressable>
+        </HStack>
+
         <Center w="100%">
           {isLoading ? (
             <Box
@@ -45,14 +65,6 @@ export function HomeScreen({navigation}) {
             </Box>
           ) : (
             <>
-              <Text2
-                fontSize="2xl"
-                fontWeight="extrabold"
-                color="orange.500"
-                textAlign="left"
-                py={2}>
-                Tech Market
-              </Text2>
               <Box width="full">
                 <Image
                   source={{

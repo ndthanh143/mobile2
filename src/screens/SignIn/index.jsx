@@ -9,6 +9,7 @@ import {
   Input,
   Link,
   VStack,
+  WarningOutlineIcon,
 } from 'native-base';
 import {Text} from 'react-native';
 import {object, string} from 'yup';
@@ -75,22 +76,23 @@ export function SignInScreen({navigation}) {
           <FormControl isInvalid={errors.phone}>
             <FormControl.Label>Số điện thoại hoặc Email</FormControl.Label>
             <Controller
+              isInvalid={errors.phone}
               control={control}
               render={({field: {onChange, onBlur, value}}) => (
                 <Input onChangeText={onChange} onBlur={onBlur} value={value} />
               )}
               name="phone"
             />
-            {errors.phone && (
-              <Text color="red" fontSize="xs">
-                {errors.phone.message}
-              </Text>
-            )}
+            <FormControl.ErrorMessage
+              leftIcon={<WarningOutlineIcon size="xs" />}>
+              {errors.phone.message}
+            </FormControl.ErrorMessage>
           </FormControl>
           <FormControl isInvalid={errors.password}>
             <FormControl.Label>Mật khẩu</FormControl.Label>
             <Controller
               control={control}
+              isInvalid={errors.password}
               render={({field: {onChange, onBlur, value}}) => (
                 <Input
                   onChangeText={onChange}
@@ -101,11 +103,11 @@ export function SignInScreen({navigation}) {
               )}
               name="password"
             />
-            {errors.password && (
-              <Text color="red" fontSize="xs">
-                {errors.password.message}
-              </Text>
-            )}
+            <FormControl.ErrorMessage
+              leftIcon={<WarningOutlineIcon size="xs" />}>
+              {errors.password.message}
+            </FormControl.ErrorMessage>
+
             {isLoginError && ( // Render error message if there's an error
               <Text color="red" fontSize="xs">
                 Đăng nhập không thành công. Vui lòng thử lại.

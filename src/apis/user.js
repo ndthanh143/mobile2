@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {axiosInstance} from '../axios';
+import {API_URL, axiosInstance} from '../axios';
 import {Buffer} from 'buffer';
 
 const BASE_URL = 'v1/user';
@@ -12,17 +12,13 @@ export const userApi = {
 
     console.log('payload', payload);
     try {
-      const {data} = await axios.post(
-        `https://tech-market.space/v1/user/signup`,
-        payload,
-        {
-          headers: {
-            // Add your headers here
-            Authorization: 'Basic ' + base64Credentials,
-            // You can add other headers like authorization token if needed
-          },
+      const {data} = await axiosInstance.post(`v1/user/signup`, payload, {
+        headers: {
+          // Add your headers here
+          Authorization: 'Basic ' + base64Credentials,
+          // You can add other headers like authorization token if needed
         },
-      );
+      });
       return data;
     } catch (err) {
       console.log(err);
@@ -33,10 +29,7 @@ export const userApi = {
     window.Buffer = window.Buffer || Buffer;
     console.log('otp', payload);
     try {
-      const {data} = await axios.post(
-        `https://tech-market.space/v1/user/confirm_otp`,
-        payload,
-      );
+      const {data} = await axiosInstance.post(`v1/user/confirm_otp`, payload);
       return data;
     } catch (err) {
       console.log(err);
