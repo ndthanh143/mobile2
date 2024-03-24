@@ -1,12 +1,20 @@
 import React from 'react';
-import { AspectRatio, Box, Center, HStack, Heading, Image, Stack, Text } from "native-base";
+import { AspectRatio, Box, Center, HStack, Heading, Image, Pressable, Stack, Text } from "native-base";
 import styles from './card.module.scss';
+import { limitCharacters } from '../utils';
 
-const Card = ({ data }) => {
-    return <Box alignItems="center" mb={5}>
-        <Box maxW="80" rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" _dark={{
-        borderColor: "coolGray.600",
-        backgroundColor: "gray.700"
+const Card = ({ data, navigation }) => {
+
+  const onCLick = () => {
+    navigation.navigate('Detail', { id: data?.id });
+    console.log('onCLickkkkkk');
+  };
+ 
+  return <Pressable onPress={onCLick}>
+  <Box alignItems="center" mb={5}>
+  <Box maxW="80" rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" _dark={{
+    borderColor: "coolGray.600",
+    backgroundColor: "gray.700"
       }} _web={{
         shadow: 2,
         borderWidth: 0
@@ -43,7 +51,7 @@ const Card = ({ data }) => {
               </Text>
             </Stack>
             <Text fontWeight="400" className={styles.description}>
-              {data?.description}
+              {limitCharacters(data?.description,150)}
             </Text>
             <HStack alignItems="center" space={4} justifyContent="space-between">
               <HStack alignItems="center">
@@ -56,7 +64,8 @@ const Card = ({ data }) => {
             </HStack>
           </Stack>
         </Box>
-      </Box>;
+      </Box>
+      </Pressable>;
   };
 
 export default Card;

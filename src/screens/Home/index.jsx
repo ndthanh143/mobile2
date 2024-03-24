@@ -98,7 +98,7 @@ export function HomeScreen({navigation}) {
                   //     ${item.price}
                   //   </Text>
                   // </Box>
-                  <Card data={item} />
+                  <Card data={item} navigation={navigation} />
                 )}
               />
             </>
