@@ -30,8 +30,8 @@ export function SignInScreen({navigation}) {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      phone: '0966355046',
-      password: '123456789',
+      phone: '0965456023',
+      password: '123456',
     },
   });
 
@@ -85,7 +85,7 @@ export function SignInScreen({navigation}) {
             />
             <FormControl.ErrorMessage
               leftIcon={<WarningOutlineIcon size="xs" />}>
-              {errors.phone.message}
+              {/* {errors.phone.message} */}
             </FormControl.ErrorMessage>
           </FormControl>
           <FormControl isInvalid={errors.password}>
@@ -105,7 +105,7 @@ export function SignInScreen({navigation}) {
             />
             <FormControl.ErrorMessage
               leftIcon={<WarningOutlineIcon size="xs" />}>
-              {errors.password.message}
+              {/* {errors.password.message} */}
             </FormControl.ErrorMessage>
 
             {isLoginError && ( // Render error message if there's an error
