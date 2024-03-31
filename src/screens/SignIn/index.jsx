@@ -131,7 +131,8 @@ export function SignInScreen({navigation}) {
             borderRadius="3xl"
             isLoading={isLoginLoading}
             isDisabled={isLoginLoading}
-            onPress={handleSubmit(onSubmit)}>
+            onPress={handleSubmit(onSubmit)}
+            _loading={isLoginLoading}>
             Đăng nhập
           </Button>
           <HStack mt="6" justifyContent="center">

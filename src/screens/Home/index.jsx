@@ -201,15 +201,9 @@ export function HomeScreen({navigation}) {
       <ScrollView>
         <Center w="100%">
           {isLoading ? (
-            <Box
-              flex={1}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              py={10}
-              height="100vh">
+            <Flex direction="column" h="100%">
               <Spinner color="red.500" size="lg" />
-            </Box>
+            </Flex>
           ) : (
             <>
               <Box width="full">

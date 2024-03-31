@@ -14,6 +14,7 @@ import {
   HStack,
   Spacer,
   FlatList,
+  Spinner,
 } from 'native-base';
 import {useEffect, useState} from 'react';
 import {Animated, Dimensions} from 'react-native';
@@ -24,57 +25,69 @@ import CardOrder from './cardOrder';
 
 const MyOrderScreen = ({navigator}) => {
   const [index, setIndex] = useState(0);
-  const [state, setState] = useState(1);
+  const tabStates = {
+    0: 1,
+    1: 4,
+    2: 3,
+  };
+  const colorCard = {
+    0: {text: 'Đang xử lý', color: 'yellow.500'},
+    1: {text: 'Đã giao hàng', color: 'green.500'},
+    2: {text: 'Đã hủy', color: 'red.700'},
+  };
   const {
     data: MyOrder,
     isLoading,
+    isFetching,
     refetch: refetchMyOrder,
   } = useQuery({
     queryKey: ['myOrders'],
-    queryFn: () => orderApi.getMyOrder({state: state}),
+    queryFn: () => orderApi.getMyOrder({state: tabStates[index]}),
   });
-  useEffect(() => {
-    refetchMyOrder({
-      params: {state: state},
-    });
-  }, [state]);
+  // useEffect(() => {
+  //   refetchMyOrder();
+  // }, [index]);
 
-  const FirstRoute = () => (
-    <FlatList
-      data={MyOrder}
-      mt={5}
-      keyExtractor={item => item.id.toString()}
-      renderItem={({item}) => <CardOrder data={item} />}
-    />
-  );
+  const Spiner = () => {
+    return (
+      <Box
+        flex={1}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        py={10}
+        height="100vh">
+        <Spinner color="red.500" size="lg" />
+      </Box>
+    );
+  };
 
-  const SecondRoute = () => (
-    <Center flex={1} my="4">
-      This is Tab 2
-    </Center>
-  );
-
-  const ThirdRoute = () => (
-    <Center flex={1} my="4">
-      This is Tab 3
-    </Center>
-  );
-
-  const FourthRoute = () => (
-    <Center flex={1} my="4">
-      This is Tab 4{' '}
-    </Center>
-  );
+  const DataRoute = () => {
+    return (
+      <FlatList
+        data={MyOrder}
+        mt={5}
+        keyExtractor={item => item.id.toString()}
+        renderItem={({item}) => (
+          <CardOrder data={item} colorCard={colorCard[index]} />
+        )}
+      />
+    );
+  };
 
   const initialLayout = {
     width: Dimensions.get('window').width,
   };
-  const renderScene = SceneMap({
-    first: FirstRoute,
-    second: FirstRoute,
-    third: FirstRoute,
-    fourth: FourthRoute,
-  });
+  const renderScene = ({route}) => {
+    switch (route.key) {
+      case 'first':
+      case 'second':
+      case 'third':
+        return isFetching ? <Spiner /> : <DataRoute />;
+      default:
+        return null;
+    }
+  };
   const [routes] = useState([
     {
       key: 'first',
@@ -91,51 +104,43 @@ const MyOrderScreen = ({navigator}) => {
   ]);
 
   const renderTabBar = props => {
-    const inputRange = props.navigationState.routes.map((x, i) => i);
     return (
       <Box flexDirection="row">
         {props.navigationState.routes.map((route, i) => {
-          const opacity = props.position.interpolate({
-            inputRange,
-            outputRange: inputRange.map(inputIndex =>
-              inputIndex === i ? 1 : 0.5,
-            ),
-          });
+          // const opacity = props.position.interpolate({
+          //   inputRange,
+          //   outputRange: inputRange.map(inputIndex =>
+          //     inputIndex === i ? 1 : 0.5,
+          //   ),
+          // });
           const color =
             index === i
               ? useColorModeValue('#000', '#e5e5e5')
               : useColorModeValue('#1f2937', '#a1a1aa');
           const borderColor =
             index === i
-              ? 'cyan.500'
+              ? 'red.500'
               : useColorModeValue('coolGray.200', 'gray.400');
-          if (i === 0) {
-            setState(1);
-          } else if (i === 1) {
-            setState(3);
-          } else {
-            setState(4);
-          }
+          const textColor = index === i ? 'white.400' : 'black.500';
           return (
             <Box
-              borderBottomWidth="3"
-              borderColor={borderColor}
+              // borderBottomWidth="3"
+              // bg={borderColor}
               flex={1}
               alignItems="center"
-              p="3"
-              cursor="pointer">
-              <Pressable
+              p="3">
+              <Button
                 onPress={() => {
-                  console.log(i);
                   setIndex(i);
-                }}>
-                <Animated.Text
-                  style={{
-                    color,
-                  }}>
-                  {route.title}
-                </Animated.Text>
-              </Pressable>
+                  console.log(i);
+                }}
+                bg={borderColor}
+                borderRadius={'3xl'}
+                w={'110px'}
+                _text={{color: index === i ? 'white' : 'black'}}
+                _loading={isFetching}>
+                {route.title}
+              </Button>
             </Box>
           );
         })}
@@ -151,7 +156,7 @@ const MyOrderScreen = ({navigator}) => {
       renderScene={renderScene}
       renderTabBar={renderTabBar}
       onIndexChange={setIndex}
-      initialLayout={initialLayout}
+      // initialLayout={initialLayout}
     />
   );
 };
