@@ -163,19 +163,19 @@ export function DetailScreen({route, navigation}) {
                 <Actionsheet.Item>Cancel</Actionsheet.Item>
               </Actionsheet.Content>
             </Actionsheet>
-            <Flex
-              align="center"
-              justify="center"
-              style={{backgroundColor: '#ffffff'}}
-              w={'100%'}
-              h={'100px'}>
-              <Button w={'90%'} style={{backgroundColor: '#db3022'}}>
-                Thêm vào giỏ hàng
-              </Button>
-            </Flex>
           </Flex>
         </Container>
       </ScrollView>
+      <Flex
+        align="center"
+        justify="center"
+        style={{backgroundColor: '#ffffff'}}
+        w={'100%'}
+        h={'100px'}>
+        <Button w={'90%'} style={{backgroundColor: '#db3022'}}>
+          Thêm vào giỏ hàng
+        </Button>
+      </Flex>
     </View>
   );
 }

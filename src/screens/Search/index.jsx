@@ -79,7 +79,8 @@ export const SearchScreen = ({navigation}) => {
           <FlatList
             data={products}
             renderItem={({item}) => (
-              <Pressable>
+              <Pressable
+                onPress={() => navigation.navigate('Detail', {id: item.id})}>
                 <Box
                   borderBottomWidth="1"
                   _dark={{
