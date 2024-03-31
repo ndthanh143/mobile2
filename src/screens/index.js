@@ -3,3 +3,5 @@ export * from './SignIn';
 export * from './Home';
 export * from './ForgotPassword';
 export * from './Search';
+export * from './Profile';
+

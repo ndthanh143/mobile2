@@ -28,7 +28,7 @@ const ProfileScreen = ({navigator}) => {
           <Center>
             <Avatar size="2xl" source={{uri: data?.avatar}} mb={4} />
             <Heading size="lg" mb={2}>
-              {data?.fullName}
+              {data.fullName}
             </Heading>
             <Text fontSize="md" color="gray.500">
               Software Developer
@@ -53,8 +53,8 @@ const ProfileScreen = ({navigator}) => {
               Contact
             </Heading>
             <VStack space={2}>
-              <Text color="gray.600">Email: {data?.email}</Text>
-              <Text color="gray.600">Phone: {data?.phone}</Text>
+              <Text color="gray.600">Email: {data.email}</Text>
+              <Text color="gray.600">Phone: {data.phone}</Text>
               <Text color="gray.600">Address: 01 Võ Văn Ngân, TP.HCM, VN</Text>
             </VStack>
           </Box>

@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Box,
   Button,
@@ -16,15 +17,19 @@ import {
   View,
   MenuIcon,
   Menu,
+  Icon,
+  NativeBaseProvider,
+  Flex,
 } from 'native-base';
 import {Text as Text2} from 'native-base';
+import {MaterialCommunityIcons, MaterialIcons} from '@expo/vector-icons';
 
 import Card from '../../container/card';
 import {useEffect, useState} from 'react';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {productApi} from '../../apis';
 import {useAuth} from '../../hooks';
-// import Icon from '@react-native-vector-icons/material-icons';
+import {useNavigation} from '@react-navigation/native';
 
 export function HomeScreen({navigation}) {
   const {data: products, isLoading} = useQuery({
@@ -39,11 +44,22 @@ export function HomeScreen({navigation}) {
     navigation.navigate('Sign In');
   };
 
+  // const Drawer = createDrawerNavigator();
+  // function Drawer() {
+  //   return (
+  //     <NavigationContainer>
+  //       <Drawer.Navigator initialRouteName="Home">
+  //         <Drawer.Screen name="Home" component={HomeScreen} />
+  //         <Drawer.Screen name="Notifications" component={NotificationsScreen} />
+  //       </Drawer.Navigator>
+  //     </NavigationContainer>
+  //   );
+  // }
+
   function AppBar() {
+    const navigation = useNavigation();
     return (
       <>
-        <StatusBar bg="red.500" barStyle="light-content" />
-        <Box safeAreaTop bg="red.500" />
         <HStack
           bg="red.500"
           px="5"
@@ -57,7 +73,7 @@ export function HomeScreen({navigation}) {
               w="190"
               trigger={triggerProps => {
                 return (
-                  <Pressable onPress={() => navigation.navigate('Profile')}>
+                  <Pressable onPress={() => navigation.openDrawer()}>
                     <HamburgerIcon size="5" color="#ffffff" />
                   </Pressable>
                 );
@@ -93,25 +109,104 @@ export function HomeScreen({navigation}) {
     );
   }
 
-  return (
-    <ScrollView>
-      <Box backgroundColor="white">
-        {/* <HStack
-          // space={[2, 3]}
-          justifyContent="space-between"
-          alignItems="center">
-          <IconButton size="lg">
-            <HamburgerIcon />
-          </IconButton>
-          <Text2 fontSize="2xl" fontWeight="extrabold" color="orange.500">
-            Tech Market
-          </Text2>
-          <Pressable onPress={() => navigation.navigate('Profile')}>
-            <SearchIcon size="4" />
+  function Footer() {
+    const [selected, setSelected] = React.useState(1);
+    return (
+      <>
+        <HStack bg="red.500" alignItems="center" safeAreaBottom shadow={6}>
+          <Pressable
+            cursor="pointer"
+            opacity={selected === 0 ? 1 : 0.5}
+            py="3"
+            flex={1}
+            onPress={() => setSelected(0)}>
+            <Center>
+              <Icon
+                mb="1"
+                as={
+                  <MaterialCommunityIcons
+                    name={selected === 0 ? 'home' : 'home-outline'}
+                  />
+                }
+                color="white"
+                size="sm"
+              />
+              <Text color="white" fontSize="12">
+                Home
+              </Text>
+            </Center>
           </Pressable>
-        </HStack> */}
-        <AppBar />
+          <Pressable
+            cursor="pointer"
+            opacity={selected === 1 ? 1 : 0.5}
+            py="2"
+            flex={1}
+            onPress={() => navigation.navigate('Search')}>
+            <Center>
+              <Icon
+                mb="1"
+                as={<MaterialIcons name="search" />}
+                color="white"
+                size="sm"
+              />
+              <Text color="white" fontSize="12">
+                Search
+              </Text>
+            </Center>
+          </Pressable>
+          <Pressable
+            cursor="pointer"
+            opacity={selected === 2 ? 1 : 0.6}
+            py="2"
+            flex={1}
+            onPress={() => setSelected(2)}>
+            <Center>
+              <Icon
+                mb="1"
+                as={
+                  <MaterialCommunityIcons
+                    name={selected === 2 ? 'cart' : 'cart-outline'}
+                  />
+                }
+                color="white"
+                size="sm"
+              />
+              <Text color="white" fontSize="12">
+                Cart
+              </Text>
+            </Center>
+          </Pressable>
+          <Pressable
+            cursor="pointer"
+            opacity={selected === 3 ? 1 : 0.5}
+            py="2"
+            flex={1}
+            onPress={() => navigation.navigate('Profile')}>
+            <Center>
+              <Icon
+                mb="1"
+                as={
+                  <MaterialCommunityIcons
+                    name={selected === 3 ? 'account' : 'account-outline'}
+                  />
+                }
+                color="white"
+                size="sm"
+              />
+              <Text color="white" fontSize="12">
+                Account
+              </Text>
+            </Center>
+          </Pressable>
+        </HStack>
+      </>
+    );
+  }
 
+  return (
+    <Flex direction="column" h="100%">
+      <AppBar />
+      <ScrollView>
         <Center w="100%">
           {isLoading ? (
             <Box
@@ -164,7 +259,8 @@ export function HomeScreen({navigation}) {
             </>
           )}
         </Center>
-      </Box>
-    </ScrollView>
+      </ScrollView>
+      <Footer />
+    </Flex>
   );
 }
