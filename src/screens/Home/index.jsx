@@ -81,14 +81,6 @@ export function HomeScreen({navigation}) {
               <Pressable>
                 <Menu.Item>Trang cá nhân</Menu.Item>
               </Pressable>
-
-              <Menu.Item>Nunito Sans</Menu.Item>
-              <Menu.Item>Roboto</Menu.Item>
-              <Menu.Item>Poppins</Menu.Item>
-              <Menu.Item>SF Pro</Menu.Item>
-              <Menu.Item>Helvetica</Menu.Item>
-              <Menu.Item isDisabled>Sofia</Menu.Item>
-              <Menu.Item>Cookie</Menu.Item>
             </Menu>
             <Text color="white" fontSize="20" fontWeight="bold" marginLeft={4}>
               Home
