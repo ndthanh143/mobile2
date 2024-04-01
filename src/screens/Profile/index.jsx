@@ -21,10 +21,9 @@ import {useAuth} from '../../hooks';
 import {useNavigation} from '@react-navigation/native';
 import {Pressable} from 'react-native';
 
-const ProfileScreen = ({navigator}) => {
+const ProfileScreen = ({navigation}) => {
   const [data, setData] = useState(null);
   const {profile, login, isLoginError, isLoginLoading, logout} = useAuth();
-  const navigation = useNavigation();
   useEffect(() => {
     if (profile) {
       setData(profile);

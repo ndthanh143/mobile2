@@ -1,6 +1,5 @@
 import {
   View,
-  ScrollView,
   Image,
   Text,
   Button,
@@ -23,7 +22,7 @@ import {orderApi} from '../../../apis/order';
 import {useQuery} from '@tanstack/react-query';
 import CardOrder from './cardOrder';
 
-const MyOrderScreen = ({navigator}) => {
+const MyOrderScreen = ({navigation}) => {
   const [index, setIndex] = useState(0);
   const tabStates = {
     0: 1,
@@ -31,9 +30,9 @@ const MyOrderScreen = ({navigator}) => {
     2: 3,
   };
   const colorCard = {
-    0: {text: 'Đang xử lý', color: 'yellow.500'},
-    1: {text: 'Đã giao hàng', color: 'green.500'},
-    2: {text: 'Đã hủy', color: 'red.700'},
+    0: {text: 'Đang xử lý', color: 'yellow.500', orderState: '1'},
+    1: {text: 'Đã giao hàng', color: 'green.500', orderState: '4'},
+    2: {text: 'Đã hủy', color: 'red.700', orderState: '3'},
   };
   const {
     data: MyOrder,
@@ -69,7 +68,11 @@ const MyOrderScreen = ({navigator}) => {
         mt={5}
         keyExtractor={item => item.id.toString()}
         renderItem={({item}) => (
-          <CardOrder data={item} colorCard={colorCard[index]} />
+          <CardOrder
+            data={item}
+            colorCard={colorCard[index]}
+            navigation={navigation}
+          />
         )}
       />
     );
