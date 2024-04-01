@@ -9,7 +9,6 @@ export const productApi = {
     return data.data || [];
   },
   getProductList: async query => {
-    console.log('query', query);
     const {data} = await axiosInstance.get('v1/product/list', {
       params: {...query},
     });

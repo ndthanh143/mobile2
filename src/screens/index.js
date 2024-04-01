@@ -4,5 +4,4 @@ export * from './Home';
 export * from './ForgotPassword';
 export * from './Search';
 export * from './Profile';
-
 export * from './Category';

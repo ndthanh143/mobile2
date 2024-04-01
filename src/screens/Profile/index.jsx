@@ -9,70 +9,195 @@ import {
   Center,
   Heading,
   VStack,
+  Flex,
+  HStack,
+  Spacer,
+  ChevronRightIcon,
+  useDisclose,
+  Actionsheet,
 } from 'native-base';
 import {useEffect, useState} from 'react';
 import {useAuth} from '../../hooks';
+import {useNavigation} from '@react-navigation/native';
+import {Pressable} from 'react-native';
 
 const ProfileScreen = ({navigator}) => {
   const [data, setData] = useState(null);
-  const {profile, login, isLoginError, isLoginLoading} = useAuth();
+  const {profile, login, isLoginError, isLoginLoading, logout} = useAuth();
+  const navigation = useNavigation();
   useEffect(() => {
     if (profile) {
       setData(profile);
     }
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigation.navigate('Sign In');
+  };
+  const {isOpen, onOpen, onClose} = useDisclose();
   return (
-    <ScrollView>
-      {data ? (
-        <View p={4}>
-          <Center>
-            <Avatar size="2xl" source={{uri: data?.avatar}} mb={4} />
-            <Heading size="lg" mb={2}>
-              {data.fullName}
-            </Heading>
-            <Text fontSize="md" color="gray.500">
-              Software Developer
-            </Text>
-          </Center>
-          <Box bg="white" p={4} mt={4} shadow={2} borderRadius={8}>
-            <Heading size="md" mb={2}>
-              About Me
-            </Heading>
-            <Text color="gray.600">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
-              aliquam arcu non leo fermentum, vel eleifend nisi convallis. Ut
-              sit amet justo eu eros scelerisque ultricies vel vel nulla. Donec
-              eget viverra urna. Proin tristique velit sed turpis scelerisque,
-              nec consectetur urna auctor. Maecenas viverra velit at nibh
-              ultricies, eget venenatis est ultrices. Duis at magna vitae sem
-              vulputate finibus eu vel enim.
-            </Text>
+    <Flex direction="column" justify="space-between" height="100%">
+      {profile ? (
+        <>
+          <Box
+            borderBottomWidth="0.5"
+            _dark={{
+              borderColor: 'muted.50',
+            }}
+            borderColor="muted.800"
+            pl={'10px'}
+            pr={['0', '5']}
+            py="2"
+            px="5">
+            <HStack space={[2, 3]} justifyContent="start" alignItems="center">
+              <Avatar size="88px" source={{uri: data?.avatar}} />
+              <VStack>
+                <Text
+                  _dark={{
+                    color: 'warmGray.50',
+                  }}
+                  color="coolGray.800"
+                  bold
+                  fontSize="2xl">
+                  {data?.fullName}
+                </Text>
+                <Text
+                  color="coolGray.600"
+                  _dark={{
+                    color: 'warmGray.200',
+                  }}
+                  fontSize="md">
+                  {data?.email}
+                </Text>
+              </VStack>
+              {/* <Spacer /> */}
+            </HStack>
           </Box>
-          <Box bg="white" p={4} mt={4} shadow={2} borderRadius={8}>
-            <Heading size="md" mb={2}>
-              Contact
-            </Heading>
-            <VStack space={2}>
-              <Text color="gray.600">Email: {data.email}</Text>
-              <Text color="gray.600">Phone: {data.phone}</Text>
-              <Text color="gray.600">Address: 01 Võ Văn Ngân, TP.HCM, VN</Text>
-            </VStack>
+          <Box>
+            <Button
+              onPress={() => navigation.navigate('MyOrder')}
+              mt={2}
+              // endIcon={<ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />}
+              backgroundColor={'#f9f9f9'}
+              // variant="ghost"
+            >
+              <Flex
+                direction="row"
+                justify="space-between"
+                align="center"
+                w={'100%'}>
+                <VStack>
+                  <Text fontSize={'xl'} color={'#2f2f2f'} bold>
+                    Đơn hàng của bạn
+                  </Text>
+                  <Text fontSize={'sm'} color={'#2f2f2f'}>
+                    Bạn có 12 đơn hàng
+                  </Text>
+                </VStack>
+                <ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />
+              </Flex>
+            </Button>
+            <Button
+              // onPress={onOpen}
+              mt={2}
+              // endIcon={<ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />}
+              backgroundColor={'#f9f9f9'}
+              // variant="ghost"
+            >
+              <Flex
+                direction="row"
+                justify="space-between"
+                align="center"
+                w={'100%'}>
+                <VStack>
+                  <Text fontSize={'xl'} color={'#2f2f2f'} bold>
+                    Địa chỉ giao hàng
+                  </Text>
+                  <Text fontSize={'sm'} color={'#2f2f2f'}>
+                    2 địa chỉ
+                  </Text>
+                </VStack>
+                <ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />
+              </Flex>
+            </Button>
+            <Button
+              onPress={() => navigation.navigate('Info')}
+              mt={2}
+              // endIcon={<ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />}
+              backgroundColor={'#f9f9f9'}
+              // variant="ghost"
+            >
+              <Flex
+                direction="row"
+                justify="space-between"
+                align="center"
+                w={'100%'}>
+                <VStack>
+                  <Text fontSize={'xl'} color={'#2f2f2f'} bold>
+                    Thông tin cá nhân
+                  </Text>
+                  <Text fontSize={'sm'} color={'#2f2f2f'}>
+                    Chỉnh sửa
+                  </Text>
+                </VStack>
+                <ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />
+              </Flex>
+            </Button>
+            <Button
+              onPress={onOpen}
+              mt={2}
+              // endIcon={<ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />}
+              backgroundColor={'#f9f9f9'}
+              // variant="ghost"
+            >
+              <Flex
+                direction="row"
+                justify="space-between"
+                align="center"
+                w={'100%'}>
+                <VStack>
+                  <Text fontSize={'xl'} color={'#2f2f2f'} bold>
+                    Cài đặt
+                  </Text>
+                  <Text fontSize={'sm'} color={'#2f2f2f'}>
+                    Thiết lập tài khoản, mật khẩu
+                  </Text>
+                </VStack>
+                <ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />
+              </Flex>
+            </Button>
           </Box>
-          <Button mt={4}>Edit Profile</Button>
-        </View>
+          <Actionsheet isOpen={isOpen} onClose={onClose}>
+            <Actionsheet.Content>
+              <Actionsheet.Item isDisabled>
+                Tài khoản thanh toán
+              </Actionsheet.Item>
+              <Actionsheet.Item>Yêu thích</Actionsheet.Item>
+              <Actionsheet.Item onPress={() => handleLogout()}>
+                Đăng xuất
+              </Actionsheet.Item>
+            </Actionsheet.Content>
+          </Actionsheet>
+        </>
       ) : (
-        <View p={4}>
-          <Avatar
-            size="2xl"
-            source={{uri: 'https://via.placeholder.com/150'}}
-            mb={4}
-          />
-          <Heading size="lg" mb={2}>
-            No data
-          </Heading>
-        </View>
+        <HStack
+          space={[2, 3]}
+          justifyContent="center"
+          alignItems="center"
+          h={'100%'}>
+          <Button
+            onPress={() => navigation.navigate('Sign In')}
+            mt={2}
+            // endIcon={<ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />}
+            backgroundColor={'red.500'}
+            // variant="ghost"
+          >
+            Bạn phải đăng nhập
+          </Button>
+        </HStack>
       )}
-    </ScrollView>
+    </Flex>
   );
 };
 
