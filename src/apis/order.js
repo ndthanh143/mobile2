@@ -28,4 +28,12 @@ export const orderApi = {
 
     return data.data.content || [];
   },
+
+  getOrderDetail: async id => {
+    const {data} = await axiosInstance.get(
+      `v1/order-detail/get-by-order/${id}`,
+    );
+
+    return data.data.content;
+  },
 };
