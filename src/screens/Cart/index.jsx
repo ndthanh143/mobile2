@@ -23,7 +23,7 @@ export function CartScreen({navigation}) {
 
   const groupedByData = _.groupBy(data, 'id');
   const totalAmount = Object.values(groupedByData).reduce(
-    (acc, cur) => acc + cur[0].price * cur.length,
+    (acc, cur) => acc + cur[0].variant.price * cur.length,
     0,
   );
 
@@ -154,7 +154,10 @@ export function CartScreen({navigation}) {
                       {item.length}x {item[0].name}
                     </Text>
                     <Text fontWeight="600" maxWidth="50%">
-                      {(item[0].price * item.length).toLocaleString('en-US')}đ
+                      {(item[0].variant.price * item.length).toLocaleString(
+                        'en-US',
+                      )}
+                      đ
                     </Text>
                   </HStack>
                 </Box>

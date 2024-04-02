@@ -25,6 +25,7 @@ import {limitCharacters} from '../../utils';
 import Card from '../../container/card';
 import {useCart} from '../../hooks';
 import {useState} from 'react';
+import {LoadingContainer} from '../../components';
 
 export function DetailScreen({route, navigation}) {
   const {id} = route.params;
@@ -48,7 +49,9 @@ export function DetailScreen({route, navigation}) {
     await addItemToCart({...detail, variant: color});
   };
 
-  return (
+  return isLoading ? (
+    <LoadingContainer />
+  ) : (
     detail && (
       <View backgroundColor="white">
         <ScrollView>
