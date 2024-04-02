@@ -109,7 +109,6 @@ export function PaymentScreen({route, navigation}) {
         />
       ) : (
         <>
-          {isPending && <Text>Loading...</Text>}
           <VStack flex={1} px="4" py="2" space="4" bg="coolGray.50">
             <Heading size="lg" color="coolGray.800" px="4" pt="4">
               Select your Address
@@ -147,7 +146,8 @@ export function PaymentScreen({route, navigation}) {
               colorScheme="primary"
               borderRadius="full"
               onPress={handleSubmit}
-              isDisabled={!selectedAddressId}>
+              isDisabled={!selectedAddressId}
+              isLoading={isPending}>
               Submit
             </Button>
           </VStack>

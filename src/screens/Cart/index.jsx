@@ -10,6 +10,7 @@ import {
   Pressable,
   ScrollView,
   Spacer,
+  Spinner,
   Text,
   VStack,
   View,
@@ -29,7 +30,13 @@ export function CartScreen({navigation}) {
   const listProducts = Object.values(groupedByData).map(item => item[0]);
 
   return isLoading ? (
-    <Text>Loading...</Text>
+    <Flex
+      justifyContent="center"
+      alignItems="center"
+      flex={1}
+      backgroundColor="white">
+      <Spinner size="lg" />
+    </Flex>
   ) : (
     <Flex
       direction="column"

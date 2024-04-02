@@ -8,10 +8,12 @@ import {
   View,
 } from 'native-base';
 
-export function OrderSuccessScreen({route}) {
+export function OrderSuccessScreen({route, navigation}) {
   const {orderId} = route.params;
 
-  const handleViewOrder = () => {};
+  const handleViewOrder = () => {
+    navigation.navigate('OrderDetail', {id: orderId});
+  };
 
   return (
     <View width="full" height="full" bgColor="white" style={{gap: 30}}>
