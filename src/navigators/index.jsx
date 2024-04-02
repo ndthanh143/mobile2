@@ -1,8 +1,12 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
+  CartScreen,
   CategoryScreen,
   ForgotPasswordScreen,
   HomeScreen,
+  OrderSuccessScreen,
+  PaymentMethodScreen,
+  PaymentScreen,
   SearchScreen,
   SignInScreen,
   SignUpScreen,
@@ -16,7 +20,7 @@ const Stack = createNativeStackNavigator();
 
 export const Navigators = () => {
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator initialRouteName="Sign In">
       <Stack.Screen name="Category" component={CategoryScreen} />
       <Stack.Screen name="Forgot Password" component={ForgotPasswordScreen} />
       <Stack.Screen name="Sign Up" component={SignUpScreen} />
@@ -27,6 +31,10 @@ export const Navigators = () => {
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Info" component={InfoScreen} />
       <Stack.Screen name="MyOrder" component={MyOrderScreen} />
+      <Stack.Screen name="Cart" component={CartScreen} />
+      <Stack.Screen name="Payment Method" component={PaymentMethodScreen} />
+      <Stack.Screen name="Payment" component={PaymentScreen} />
+      <Stack.Screen name="Order Success" component={OrderSuccessScreen} />
     </Stack.Navigator>
   );
 };

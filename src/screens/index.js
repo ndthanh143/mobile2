@@ -4,4 +4,7 @@ export * from './Home';
 export * from './ForgotPassword';
 export * from './Search';
 export * from './Profile';
+export * from './Cart';
 export * from './Category';
+export * from './payment';
+export * from './order';
