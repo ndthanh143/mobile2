@@ -3,6 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {NativeBaseProvider} from 'native-base';
 import {Navigators} from './src/navigators';
 
+
 const queryClient = new QueryClient();
 
 export default function App() {

@@ -1,9 +1,18 @@
 import {Box, Button, Center, HStack, Text, VStack} from 'native-base';
 import {convertUtcToLocalTime, formatMoney} from '../../../utils';
 import {DATE_FORMAT_VALUE, DEFAULT_FORMAT} from '../../../constants';
+import {useState} from 'react';
 
-const CardOrder = ({data, colorCard}) => {
-  // console.log(colorCard);
+const CardOrder = ({data, colorCard, navigation}) => {
+  const [loading, setLoading] = useState(false);
+  const onCLick = () => {
+    setLoading(true);
+    navigation.navigate('OrderDetail', {
+      id: data?.id,
+      orderData: data,
+      orderState: colorCard?.orderState,
+    });
+  };
   return (
     <Center flex={1} my="2">
       <Box
@@ -78,9 +87,11 @@ const CardOrder = ({data, colorCard}) => {
           </HStack>
           <HStack justifyContent="space-between" alignItems="center" pt={'5px'}>
             <Button
+              onPress={() => onCLick()}
               borderRadius={'10px'}
               variant="outline"
-              _text={{fontSize: 'md'}}>
+              _text={{fontSize: 'md'}}
+              _loading={loading}>
               Xem chi tiết
             </Button>
             <Text
