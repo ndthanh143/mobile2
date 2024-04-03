@@ -2,7 +2,6 @@ import {axiosInstance} from '../axios';
 
 export const productApi = {
   getProducts: async query => {
-    console.log(query);
     const {data} = await axiosInstance.get('v1/product/auto-complete', {
       params: {...query},
     });

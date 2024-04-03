@@ -96,7 +96,7 @@ const CardOrder = ({data, colorCard, navigation}) => {
             <Text
               fontSize={'sm'}
               bold
-              color={colorCard.color}
+              // color={colorCard.color}
               _dark={{
                 color: 'green',
               }}>

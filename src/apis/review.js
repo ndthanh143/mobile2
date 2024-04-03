@@ -31,4 +31,23 @@ export const reviewApi = {
 
     return data.data.content;
   },
+
+  starListReview: async id => {
+    const {data} = await axiosInstance.get(
+      `v1/review/star/count-for-each/${id}`,
+    );
+
+    return data.data.content;
+  },
+
+  getByProductPublic: async query => {
+    console.log(query)
+    const {data} = await axiosInstance.get(
+      `v1/review/get-by-product-public`, {
+        params: {...query}
+      }
+    );
+
+    return data.data.content;
+  },
 };

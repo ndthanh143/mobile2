@@ -1,5 +1,5 @@
 import moment from "moment";
-import { CurrentcyPositions, DATE_FORMAT_DISPLAY } from "../constants";
+import { CurrentcyPositions, DATE_FORMAT_DISPLAY, DEFAULT_FORMAT } from "../constants";
 
 export function limitCharacters(value, numOfCharacters) {
     if (!value || typeof value !== 'string') {
@@ -44,4 +44,37 @@ export const formatMoney = (value, setting = {}) => {
         }
     }
     return '';
+};
+
+export const calculateStars = (starData) => {
+    let totalStars = 0;
+    let totalRatings = 0;
+    const ratingCount = Array(5).fill(0);
+
+    if (Array.isArray(starData)) {
+        starData?.forEach((item) => {
+          totalStars += item.star * item.amount;
+          totalRatings += item.amount;
+      
+          if (item.star >= 1 && item.star <= 5) {
+            ratingCount[item.star - 1] += item.amount;
+          }
+        });
+    } else {
+        console.log("ko phải mảng")
+    }
+  
+    const averageRating = totalRatings > 0 ? (totalStars / totalRatings).toFixed(1) : 0;
+    const ratingPercentages = ratingCount.map((count) =>
+      totalRatings > 0 ? Math.floor((count / totalRatings) * 100) : 0
+    );
+  
+    return { averageRating, ratingPercentages };
+  };
+
+  export const formatTimeDifference = (utcTime, format = DEFAULT_FORMAT) => {
+    const date = convertUtcToLocalTime(utcTime, format, format);
+    const givenDate = moment(date, DEFAULT_FORMAT);
+    const formattedDifference = givenDate.fromNow();
+    return formattedDifference;
 };
