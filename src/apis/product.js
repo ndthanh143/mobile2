@@ -2,6 +2,7 @@ import {axiosInstance} from '../axios';
 
 export const productApi = {
   getProducts: async query => {
+    console.log(query);
     const {data} = await axiosInstance.get('v1/product/auto-complete', {
       params: {...query},
     });
@@ -17,6 +18,14 @@ export const productApi = {
   },
   getDetail: async id => {
     const {data} = await axiosInstance.get(`v1/product/get-autoComplete/${id}`);
+
+    return data.data;
+  },
+
+  getRelatedProduct: async (id, query) => {
+    const {data} = await axiosInstance.get(`v1/product/get-product-related/${id}`, {
+      params: {...query},
+    });
 
     return data.data;
   },

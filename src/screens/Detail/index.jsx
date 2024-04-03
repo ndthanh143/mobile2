@@ -40,7 +40,10 @@ export function DetailScreen({route, navigation}) {
 
   const {data: products} = useQuery({
     queryKey: ['products'],
-    queryFn: () => productApi.getProducts(),
+    queryFn: () =>
+      productApi.getProducts({
+        categoryId: detail.categoryDto?.id,
+      }),
   });
 
   const {isOpen, onOpen, onClose} = useDisclose();
@@ -170,7 +173,7 @@ export function DetailScreen({route, navigation}) {
                   Có thể bạn thích?
                 </Text>
                 <Text fontSize={'md'} color={'#2f2f2f'}>
-                  12 items
+                  {products?.length} items
                 </Text>
               </Flex>
               <NativeBaseProvider>

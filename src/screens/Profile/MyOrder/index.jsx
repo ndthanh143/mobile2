@@ -43,9 +43,9 @@ const MyOrderScreen = ({navigation}) => {
     queryKey: ['myOrders'],
     queryFn: () => orderApi.getMyOrder({state: tabStates[index]}),
   });
-  // useEffect(() => {
-  //   refetchMyOrder();
-  // }, [index]);
+  useEffect(() => {
+    refetchMyOrder();
+  }, [index]);
 
   const Spiner = () => {
     return (
@@ -135,13 +135,11 @@ const MyOrderScreen = ({navigation}) => {
               <Button
                 onPress={() => {
                   setIndex(i);
-                  console.log(i);
                 }}
                 bg={borderColor}
                 borderRadius={'3xl'}
                 w={'110px'}
-                _text={{color: index === i ? 'white' : 'black'}}
-                _loading={isFetching}>
+                _text={{color: index === i ? 'white' : 'black'}}>
                 {route.title}
               </Button>
             </Box>

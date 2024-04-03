@@ -7,7 +7,7 @@ const CardOrder = ({data, colorCard, navigation}) => {
   const [loading, setLoading] = useState(false);
   const onCLick = () => {
     setLoading(true);
-    navigation.navigate('OrderDetail', {
+    navigation.navigate('Order Detail', {
       id: data?.id,
       orderData: data,
       orderState: colorCard?.orderState,
@@ -90,8 +90,7 @@ const CardOrder = ({data, colorCard, navigation}) => {
               onPress={() => onCLick()}
               borderRadius={'10px'}
               variant="outline"
-              _text={{fontSize: 'md'}}
-              _loading={loading}>
+              _text={{fontSize: 'md'}}>
               Xem chi tiết
             </Button>
             <Text

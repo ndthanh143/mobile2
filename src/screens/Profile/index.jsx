@@ -75,7 +75,7 @@ const ProfileScreen = ({navigation}) => {
           </Box>
           <Box>
             <Button
-              onPress={() => navigation.navigate('MyOrder')}
+              onPress={() => navigation.navigate('My Order')}
               mt={2}
               // endIcon={<ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />}
               backgroundColor={'#f9f9f9'}
