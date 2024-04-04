@@ -6,6 +6,7 @@ import {
   Center,
   ChevronRightIcon,
   Container,
+  FlatList,
   Flex,
   Heading,
   Icon,
@@ -26,6 +27,9 @@ import Card from '../../container/card';
 import {useCart} from '../../hooks';
 import {useState} from 'react';
 import {LoadingContainer} from '../../components';
+import {reviewApi} from '../../apis/review';
+import {StarProgress} from './starProgress';
+import CardStar from './cardStar';
 
 export function DetailScreen({route, navigation}) {
   const {id} = route.params;
@@ -40,7 +44,15 @@ export function DetailScreen({route, navigation}) {
 
   const {data: products} = useQuery({
     queryKey: ['products'],
-    queryFn: () => productApi.getProducts(),
+    queryFn: () =>
+      productApi.getProducts({
+        categoryId: detail.categoryDto?.id,
+      }),
+  });
+
+  const {data: listReview} = useQuery({
+    queryKey: ['listReviewData', id],
+    queryFn: () => reviewApi.getByProductPublic({productId: id}),
   });
 
   const {isOpen, onOpen, onClose} = useDisclose();
@@ -160,6 +172,24 @@ export function DetailScreen({route, navigation}) {
                   <ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />
                 </Flex>
               </Button>
+              {listReview?.length && (
+                <Flex direction="column" align="center" mt={2}>
+                  <Heading color={'rgba(250,219,20,255)'}>
+                    Đánh giá sản phẩm
+                  </Heading>
+                  <Box>
+                    <StarProgress />
+                  </Box>
+                  <Box w={'100%'}>
+                    <FlatList
+                      data={listReview}
+                      mt={5}
+                      keyExtractor={item => item.id}
+                      renderItem={({item}) => <CardStar data={item} />}
+                    />
+                  </Box>
+                </Flex>
+              )}
               <Flex
                 direction="row"
                 justify="space-between"
@@ -170,7 +200,7 @@ export function DetailScreen({route, navigation}) {
                   Có thể bạn thích?
                 </Text>
                 <Text fontSize={'md'} color={'#2f2f2f'}>
-                  12 items
+                  {products?.length} items
                 </Text>
               </Flex>
               <NativeBaseProvider>

@@ -12,7 +12,7 @@ export function OrderSuccessScreen({route, navigation}) {
   const {orderId} = route.params;
 
   const handleViewOrder = () => {
-    navigation.navigate('OrderDetail', {id: orderId});
+    navigation.navigate('Order Detail', {id: orderId});
   };
 
   return (

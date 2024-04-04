@@ -21,7 +21,7 @@ const Stack = createNativeStackNavigator();
 
 export const Navigators = () => {
   return (
-    <Stack.Navigator initialRouteName="Sign In">
+    <Stack.Navigator initialRouteName="Home">
       <Stack.Screen name="Category" component={CategoryScreen} />
       <Stack.Screen name="Forgot Password" component={ForgotPasswordScreen} />
       <Stack.Screen name="Sign Up" component={SignUpScreen} />
@@ -31,12 +31,12 @@ export const Navigators = () => {
       <Stack.Screen name="Detail" component={DetailScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Info" component={InfoScreen} />
-      <Stack.Screen name="MyOrder" component={MyOrderScreen} />
+      <Stack.Screen name="My Order" component={MyOrderScreen} />
       <Stack.Screen name="Cart" component={CartScreen} />
       <Stack.Screen name="Payment Method" component={PaymentMethodScreen} />
       <Stack.Screen name="Payment" component={PaymentScreen} />
       <Stack.Screen name="Order Success" component={OrderSuccessScreen} />
-      <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
+      <Stack.Screen name="Order Detail" component={OrderDetailScreen} />
     </Stack.Navigator>
   );
 };
