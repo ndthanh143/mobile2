@@ -62,7 +62,7 @@ export function ForgotPasswordScreen({navigation}) {
   };
 
   return (
-    <Center w="100%">
+    <Center w="100%" height="100%" bgColor="white">
       <Box safeArea p="2" py="8" w="90%" maxW="290">
         <Heading
           size="lg"

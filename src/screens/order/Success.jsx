@@ -7,13 +7,23 @@ import {
   Text,
   View,
 } from 'native-base';
+import {useEffect} from 'react';
+import {useFavorite} from '../../hooks';
 
 export function OrderSuccessScreen({route, navigation}) {
-  const {orderId} = route.params;
+  const {orderId, method} = route.params;
+
+  console.log('method', method === 'COD');
+
+  const {saveCart} = useFavorite();
 
   const handleViewOrder = () => {
     navigation.navigate('Order Detail', {id: orderId});
   };
+
+  useEffect(() => {
+    saveCart([]);
+  }, []);
 
   return (
     <View width="full" height="full" bgColor="white" style={{gap: 30}}>
@@ -25,7 +35,11 @@ export function OrderSuccessScreen({route, navigation}) {
         alignItems="center"
         justifyContent="center"
         style={{gap: 40}}>
-        <Heading mx="auto">Thanh toán thành công</Heading>
+        {method === 'COD' ? (
+          <Heading mx="auto">Đặt hàng thành công</Heading>
+        ) : (
+          <Heading mx="auto">Thanh toán thành công</Heading>
+        )}
         <Box
           borderRadius="full"
           borderWidth={4}

@@ -166,6 +166,30 @@ const ProfileScreen = ({navigation}) => {
                 <ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />
               </Flex>
             </Button>
+            <Button
+              onPress={handleLogout}
+              mt={2}
+              // endIcon={<ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />}
+              backgroundColor={'#f9f9f9'}
+              // variant="ghost"
+            >
+              <Flex
+                direction="row"
+                justify="space-between"
+                align="start"
+                w={'100%'}>
+                <VStack>
+                  <Text fontSize={'xl'} color={'#2f2f2f'} bold>
+                    Đăng xuất
+                  </Text>
+                  <Text fontSize={'sm'} color={'#2f2f2f'}>
+                    Đăng xuất khỏi tài khoản
+                  </Text>
+                </VStack>
+                <Box></Box>
+                {/* <ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" /> */}
+              </Flex>
+            </Button>
           </Box>
           <Actionsheet isOpen={isOpen} onClose={onClose}>
             <Actionsheet.Content>

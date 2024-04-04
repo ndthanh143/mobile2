@@ -1,9 +1,8 @@
-import {Image, Dimensions, View, StyleSheet} from 'react-native';
+import {Image, View} from 'react-native';
 import {
   Actionsheet,
   Box,
   Button,
-  Center,
   ChevronRightIcon,
   Container,
   FlatList,
@@ -13,29 +12,36 @@ import {
   NativeBaseProvider,
   Pressable,
   ScrollView,
-  Select,
-  Stack,
   Text,
+  Toast,
   useDisclose,
 } from 'native-base';
 import {productApi} from '../../apis';
 import {useQuery} from '@tanstack/react-query';
-let {height, width} = Dimensions.get('window');
 import {AirbnbRating} from 'react-native-ratings';
 import {limitCharacters} from '../../utils';
 import Card from '../../container/card';
-import {useCart} from '../../hooks';
-import {useState} from 'react';
+import {useCart, useFavorite} from '../../hooks';
+import {useEffect, useState} from 'react';
 import {LoadingContainer} from '../../components';
 import {reviewApi} from '../../apis/review';
 import {StarProgress} from './starProgress';
 import CardStar from './cardStar';
+import {MaterialIcons} from '@expo/vector-icons'; // Make sure to install @expo/vector-icons if using Expo, or use react-native-vector-icons
 
 export function DetailScreen({route, navigation}) {
   const {id} = route.params;
 
   const {addItemToCart} = useCart();
+  const {
+    addItemToFavorite,
+    removeItemFromFavorite,
+    data: favorites,
+  } = useFavorite();
+  const [isLoadingAddToCart, setIsLoadingAddToCart] = useState(false);
   const [color, setColor] = useState();
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [amount, setAmount] = useState(1);
 
   const {data: detail, isLoading} = useQuery({
     queryKey: ['detail', id],
@@ -43,11 +49,9 @@ export function DetailScreen({route, navigation}) {
   });
 
   const {data: products} = useQuery({
-    queryKey: ['products'],
+    queryKey: ['products', detail.categoryDto?.name],
     queryFn: () =>
-      productApi.getProducts({
-        categoryId: detail.categoryDto?.id,
-      }),
+      productApi.getProducts({categoryName: detail.categoryDto?.name}),
   });
 
   const {data: listReview} = useQuery({
@@ -58,7 +62,46 @@ export function DetailScreen({route, navigation}) {
   const {isOpen, onOpen, onClose} = useDisclose();
 
   const handleAddToCart = async () => {
-    await addItemToCart({...detail, variant: color});
+    setIsLoadingAddToCart(true);
+    await addItemToCart({...detail, variant: color, quantity: amount});
+    Toast.show({
+      title: 'Đã thêm sản phẩm vào giỏ hàng',
+      variant: 'success',
+    });
+    setIsLoadingAddToCart(false);
+  };
+
+  const handleDecrease = () => {
+    if (amount > 1) {
+      setAmount(amount - 1);
+    }
+  };
+
+  const handleIncrease = () => {
+    setAmount(amount + 1);
+  };
+
+  useEffect(() => {
+    if (favorites) {
+      const isFav = Boolean(favorites.find(item => item.id === id));
+      isFav && setIsFavorite(isFav);
+    }
+  }, [favorites]);
+
+  const toggleFavorite = () => {
+    setIsFavorite(!isFavorite);
+
+    if (!isFavorite) {
+      addItemToFavorite(detail);
+    } else {
+      removeItemFromFavorite(detail.id);
+    }
+    Toast.show({
+      title: isFavorite
+        ? 'Đã xoá sản phẩm khỏi mục yêu thích'
+        : 'Đã thêm sản phẩm vào mục yêu thích',
+    });
+    // Here, you'd also update your persistent store (local storage, API, etc.)
   };
 
   return isLoading ? (
@@ -73,10 +116,27 @@ export function DetailScreen({route, navigation}) {
                 uri: `${detail.image}`,
               }}
               // width={'100%'}
-              style={{width: 400, height: 200}} // You can adjust the width and height as needed
+              style={{width: '100%', height: 200}} // You can adjust the width and height as needed
             />
             <Flex direction="column" align="start" mx={3} my={3} w={'115%'}>
-              <Heading size="lg">{detail.name}</Heading>
+              <Flex
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                style={{gap: 10}}>
+                <Heading size="lg" maxW="95%">
+                  {detail.name}
+                </Heading>
+                <Pressable onPress={toggleFavorite}>
+                  <Icon
+                    as={MaterialIcons}
+                    name={isFavorite ? 'favorite' : 'favorite-border'}
+                    size="lg"
+                    color="red.600"
+                  />
+                </Pressable>
+              </Flex>
+
               <Heading size="md" fontWeight="bold" color="primary.500">
                 {(color?.price || detail.price)?.toLocaleString('en-US')}đ
               </Heading>
@@ -132,6 +192,29 @@ export function DetailScreen({route, navigation}) {
                       </Flex>
                     </Pressable>
                   ))}
+                </Flex>
+              </Box>
+
+              <Box py={4}>
+                <Text mb={2} fontWeight="bold">
+                  Số lượng
+                </Text>
+                <Flex direction="row" flexWrap="wrap" style={{gap: 8}}>
+                  <Button py={1} px={4} onPress={handleDecrease}>
+                    -
+                  </Button>
+                  <Box
+                    borderRadius="md"
+                    borderWidth={1}
+                    borderColor="gray.500"
+                    display="flex"
+                    justifyContent="center"
+                    px={4}>
+                    {amount}
+                  </Box>
+                  <Button py={1} px={4} onPress={handleIncrease}>
+                    +
+                  </Button>
                 </Flex>
               </Box>
               <Button
@@ -199,21 +282,16 @@ export function DetailScreen({route, navigation}) {
                 <Text bold fontSize={'2xl'} color={'#2f2f2f'}>
                   Có thể bạn thích?
                 </Text>
-                <Text fontSize={'md'} color={'#2f2f2f'}>
-                  {products?.length} items
-                </Text>
               </Flex>
-              <NativeBaseProvider>
-                <ScrollView horizontal={true} mt={3}>
-                  {products?.map(item => {
-                    return (
-                      <View style={{marginLeft: 5}} key={item?.id}>
-                        <Card data={item} navigation={navigation} />
-                      </View>
-                    );
-                  })}
-                </ScrollView>
-              </NativeBaseProvider>
+              <ScrollView horizontal={true} mt={3}>
+                {products?.map(item => {
+                  return (
+                    <View style={{marginLeft: 5}} key={item?.id}>
+                      <Card data={item} navigation={navigation} />
+                    </View>
+                  );
+                })}
+              </ScrollView>
               <Actionsheet isOpen={isOpen} onClose={onClose}>
                 <Actionsheet.Content>
                   <Box w="100%" h={60} px={4} justifyContent="center">
@@ -259,6 +337,7 @@ export function DetailScreen({route, navigation}) {
             width="90%"
             borderRadius="full"
             isDisabled={!color}
+            isLoading={isLoadingAddToCart}
             backgroundColor="#db3022">
             Add to Cart
           </Button>

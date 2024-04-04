@@ -59,12 +59,16 @@ export function PaymentScreen({route, navigation}) {
     mutationFn: orderApi.createOrder,
     onSuccess: data => {
       setOrder(data);
-      mutateTransaction({
-        orderId: data.orderId,
-        urlCancel: 'exp://192.168.1.244:8081',
-        urlSuccess: 'exp://192.168.1.244:8081',
-      });
-      setSanbox(null);
+      if (methodValues[method] === 0) {
+        navigation.navigate('Order Success', {orderId: data.id, method: 'COD'});
+        return;
+      } else {
+        mutateTransaction({
+          orderId: data.orderId,
+          urlCancel: 'exp://192.168.1.55:8081',
+          urlSuccess: 'exp://192.168.1.55:8081',
+        });
+      }
       console.log('Order created');
     },
     onError: error => {
@@ -91,11 +95,15 @@ export function PaymentScreen({route, navigation}) {
   };
 
   const handleNavigateStateChange = state => {
+    console.log('state', state);
     if (state.url.includes('cancel')) {
       setSanbox(null);
     }
     if (state.url.includes('success')) {
-      navigation.navigate('Order Success', {orderId: order?.id});
+      navigation.navigate('Order Success', {
+        orderId: order.id,
+        method: 'PayPal',
+      });
     }
   };
 

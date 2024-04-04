@@ -76,6 +76,28 @@ export function Footer() {
         </Pressable>
         <Pressable
           cursor="pointer"
+          opacity={selected === 2 ? 1 : 0.6}
+          py="2"
+          flex={1}
+          onPress={() => navigation.navigate('Favorite')}>
+          <Center>
+            <Icon
+              mb="1"
+              as={
+                <MaterialCommunityIcons
+                  name={selected === 'Favorite' ? 'heart' : 'heart-outline'}
+                />
+              }
+              color="white"
+              size="sm"
+            />
+            <Text color="white" fontSize="12">
+              Favorite
+            </Text>
+          </Center>
+        </Pressable>
+        <Pressable
+          cursor="pointer"
           opacity={selected === 3 ? 1 : 0.5}
           py="2"
           flex={1}

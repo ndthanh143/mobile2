@@ -44,7 +44,7 @@ export const useAuth = () => {
   });
 
   const logout = async () => {
-    queryClient.setQueryData('profile', null);
+    queryClient.setQueryData(['profile'], null);
     await removeToken();
     setToken(null);
   };

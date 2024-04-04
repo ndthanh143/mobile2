@@ -2,6 +2,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
   CartScreen,
   CategoryScreen,
+  FavoriteScreen,
   ForgotPasswordScreen,
   HomeScreen,
   OrderSuccessScreen,
@@ -37,6 +38,7 @@ export const Navigators = () => {
       <Stack.Screen name="Payment" component={PaymentScreen} />
       <Stack.Screen name="Order Success" component={OrderSuccessScreen} />
       <Stack.Screen name="Order Detail" component={OrderDetailScreen} />
+      <Stack.Screen name="Favorite" component={FavoriteScreen} />
     </Stack.Navigator>
   );
 };

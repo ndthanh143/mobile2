@@ -35,7 +35,7 @@ export function SignInScreen({navigation}) {
     },
   });
 
-  const {profile, isFetched, login, isLoginError, isLoginLoading} = useAuth();
+  const {profile, login, isLoginError, isLoginLoading, logout} = useAuth();
 
   const onSubmit = data => {
     login(data);
@@ -45,12 +45,11 @@ export function SignInScreen({navigation}) {
     if (profile) {
       navigation.navigate('Home');
     }
-  }, [profile, login, isLoginLoading, navigation]);
+  }, [profile, login, isLoginLoading, logout, navigation]);
 
   return (
-    isFetched &&
     !profile && (
-      <Center w="100%">
+      <Center w="100%" bgColor="white" height="100%">
         <Box safeArea p="2" py="8" w="90%" maxW="290">
           <Heading
             size="lg"

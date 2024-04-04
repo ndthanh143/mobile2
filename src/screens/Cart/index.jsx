@@ -8,8 +8,6 @@ import {
   Heading,
   Image,
   Pressable,
-  ScrollView,
-  Spacer,
   Spinner,
   Text,
   VStack,
@@ -21,13 +19,10 @@ import _ from 'lodash';
 export function CartScreen({navigation}) {
   const {data, isLoading, removeItemFromCart} = useCart();
 
-  const groupedByData = _.groupBy(data, 'id');
-  const totalAmount = Object.values(groupedByData).reduce(
-    (acc, cur) => acc + cur[0].variant.price * cur.length,
+  const totalAmount = Object.values(data).reduce(
+    (acc, cur) => acc + cur?.variant.price * cur.quantity,
     0,
   );
-
-  const listProducts = Object.values(groupedByData).map(item => item[0]);
 
   return isLoading ? (
     <Flex
@@ -65,15 +60,15 @@ export function CartScreen({navigation}) {
         )}
         <View>
           <FlatList
-            data={listProducts}
+            data={data}
             paddingX={2}
             renderItem={({item}) => (
               <Pressable
-              // onPress={() => navigation.navigate('Detail', {id: item.id})}
+              // onPress={() => navigation.navigate('Detail', {id: item?.id})}
               >
                 <Box pl={['0', '4']} pr={['0', '5']} my="2" mx={4}>
                   <Button
-                    onPress={() => removeItemFromCart(item.id)}
+                    onPress={() => removeItemFromCart(item?.id)}
                     position="absolute"
                     top={-8}
                     right={-8}
@@ -87,7 +82,7 @@ export function CartScreen({navigation}) {
                   </Button>
 
                   <HStack
-                    key={item.id}
+                    key={item?.id}
                     space={[2, 3]}
                     justifyContent="space-between"
                     bgColor="white"
@@ -103,9 +98,9 @@ export function CartScreen({navigation}) {
                     <Image
                       size="lg"
                       source={{
-                        uri: item.image,
+                        uri: item?.image,
                       }}
-                      alt={item.name}
+                      alt={item?.name}
                     />
                     <VStack space={1}>
                       <Heading
@@ -114,26 +109,27 @@ export function CartScreen({navigation}) {
                         color="coolGray.800"
                         _dark={{
                           color: 'warmGray.50',
-                        }}>
-                        {item.name}
+                        }}
+                        maxW="80%">
+                        {item?.name}
                       </Heading>
                       <Text
                         isTruncated
                         noOfLines={2}
                         fontSize={12}
                         maxWidth="80%">
-                        {item.description}
+                        {item?.description}
                       </Text>
-                      <Text>Màu: {item.variant?.color}</Text>
+                      <Text>Màu: {item?.variant?.color}</Text>
                       <Text fontWeight="600">
-                        {item.variant?.price.toLocaleString('en-US')}đ
+                        {item?.variant?.price.toLocaleString('en-US')}đ
                       </Text>
                     </VStack>
                   </HStack>
                 </Box>
               </Pressable>
             )}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item?.id}
           />
         </View>
       </View>
@@ -142,7 +138,7 @@ export function CartScreen({navigation}) {
           <Divider my={4} />
           <View paddingX={6} mt={2}>
             <FlatList
-              data={Object.values(groupedByData)}
+              data={data}
               renderItem={({item}) => (
                 <Box>
                   <HStack
@@ -151,10 +147,10 @@ export function CartScreen({navigation}) {
                     borderRadius={8}
                     pb={2}>
                     <Text fontWeight="600" maxWidth="50%">
-                      {item.length}x {item[0].name}
+                      {item.quantity}x {item.name}
                     </Text>
                     <Text fontWeight="600" maxWidth="50%">
-                      {(item[0].variant.price * item.length).toLocaleString(
+                      {(item.variant.price * item.quantity).toLocaleString(
                         'en-US',
                       )}
                       đ
