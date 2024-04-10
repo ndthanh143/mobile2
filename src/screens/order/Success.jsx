@@ -8,24 +8,43 @@ import {
   View,
 } from 'native-base';
 import {useEffect} from 'react';
-import {useFavorite} from '../../hooks';
+import {useCart} from '../../hooks';
+import {useQuery} from '@tanstack/react-query';
+import {orderApi} from '../../apis';
+import {LoadingContainer} from '../../components';
 
 export function OrderSuccessScreen({route, navigation}) {
   const {orderId, method} = route.params;
 
   console.log('method', method === 'COD');
 
-  const {saveCart} = useFavorite();
+  const {isLoading, data} = useQuery({
+    queryKey: ['my-order'],
+    queryFn: () => orderApi.getMyOrder(),
+  });
+
+  const {saveCart} = useCart();
 
   const handleViewOrder = () => {
-    navigation.navigate('Order Detail', {id: orderId});
+    console.log('orderId', orderId);
+    const orderData = data?.find(item => item.id === orderId);
+    if (orderData) {
+      navigation.navigate('Order Detail', {
+        id: orderId,
+        orderData,
+      });
+    } else {
+      navigation.navigate('My Order');
+    }
   };
 
   useEffect(() => {
     saveCart([]);
   }, []);
 
-  return (
+  return isLoading ? (
+    <LoadingContainer />
+  ) : (
     <View width="full" height="full" bgColor="white" style={{gap: 30}}>
       <Container
         mx="auto"

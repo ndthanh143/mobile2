@@ -59,7 +59,9 @@ export function FavoriteScreen({navigation}) {
                   <Button
                     size="sm"
                     borderRadius="full"
-                    onPress={() => navigation.navigate('Cart')}>
+                    onPress={() =>
+                      navigation.navigate('Detail', {id: product.id})
+                    }>
                     Thêm vào giỏ hàng
                   </Button>
                   <Button

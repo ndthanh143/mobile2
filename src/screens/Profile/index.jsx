@@ -22,18 +22,13 @@ import {useNavigation} from '@react-navigation/native';
 import {Pressable} from 'react-native';
 
 const ProfileScreen = ({navigation}) => {
-  const [data, setData] = useState(null);
   const {profile, login, isLoginError, isLoginLoading, logout} = useAuth();
-  useEffect(() => {
-    if (profile) {
-      setData(profile);
-    }
-  }, []);
 
   const handleLogout = () => {
     logout();
     navigation.navigate('Sign In');
   };
+
   const {isOpen, onOpen, onClose} = useDisclose();
   return (
     <Flex direction="column" justify="space-between" height="100%">
@@ -50,7 +45,7 @@ const ProfileScreen = ({navigation}) => {
             py="2"
             px="5">
             <HStack space={[2, 3]} justifyContent="start" alignItems="center">
-              <Avatar size="88px" source={{uri: data?.avatar}} />
+              <Avatar size="88px" source={{uri: profile.avatar}} />
               <VStack>
                 <Text
                   _dark={{
@@ -59,7 +54,7 @@ const ProfileScreen = ({navigation}) => {
                   color="coolGray.800"
                   bold
                   fontSize="2xl">
-                  {data?.fullName}
+                  {profile.fullName}
                 </Text>
                 <Text
                   color="coolGray.600"
@@ -67,7 +62,7 @@ const ProfileScreen = ({navigation}) => {
                     color: 'warmGray.200',
                   }}
                   fontSize="md">
-                  {data?.email}
+                  {profile.email}
                 </Text>
               </VStack>
               {/* <Spacer /> */}

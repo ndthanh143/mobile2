@@ -49,17 +49,22 @@ export function DetailScreen({route, navigation}) {
   });
 
   const {data: products} = useQuery({
-    queryKey: ['products', detail.categoryDto?.name],
+    queryKey: ['products', detail?.categoryDto.name],
     queryFn: () =>
-      productApi.getProducts({categoryName: detail.categoryDto?.name}),
+      productApi.getProducts({categoryName: detail?.categoryDto.name}),
+    enabled: Boolean(detail),
   });
 
-  const {data: listReview} = useQuery({
+  const {data: listReview, refetch: refetchReview} = useQuery({
     queryKey: ['listReviewData', id],
-    queryFn: () => reviewApi.getByProductPublic({productId: id}),
+    queryFn: () => reviewApi.getByProductPublic(id),
   });
 
   const {isOpen, onOpen, onClose} = useDisclose();
+
+  useEffect(() => {
+    refetchReview();
+  }, [id]);
 
   const handleAddToCart = async () => {
     setIsLoadingAddToCart(true);
@@ -104,12 +109,14 @@ export function DetailScreen({route, navigation}) {
     // Here, you'd also update your persistent store (local storage, API, etc.)
   };
 
+  console.log('listReview', listReview);
+
   return isLoading ? (
     <LoadingContainer />
   ) : (
     detail && (
       <View backgroundColor="white">
-        <ScrollView>
+        <ScrollView paddingBottom={100}>
           <Container mx={0}>
             <Image
               source={{
@@ -255,7 +262,7 @@ export function DetailScreen({route, navigation}) {
                   <ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />
                 </Flex>
               </Button>
-              {listReview?.length && (
+              {listReview && (
                 <Flex direction="column" align="center" mt={2}>
                   <Heading color={'rgba(250,219,20,255)'}>
                     Đánh giá sản phẩm
@@ -283,15 +290,17 @@ export function DetailScreen({route, navigation}) {
                   Có thể bạn thích?
                 </Text>
               </Flex>
-              <ScrollView horizontal={true} mt={3}>
-                {products?.map(item => {
-                  return (
-                    <View style={{marginLeft: 5}} key={item?.id}>
-                      <Card data={item} navigation={navigation} />
-                    </View>
-                  );
-                })}
-              </ScrollView>
+              <View>
+                <ScrollView horizontal={true} mt={3}>
+                  {products?.map(item => {
+                    return (
+                      <View style={{marginLeft: 5}} key={item?.id}>
+                        <Card data={item} navigation={navigation} />
+                      </View>
+                    );
+                  })}
+                </ScrollView>
+              </View>
               <Actionsheet isOpen={isOpen} onClose={onClose}>
                 <Actionsheet.Content>
                   <Box w="100%" h={60} px={4} justifyContent="center">

@@ -21,7 +21,6 @@ export const orderApi = {
     return data.data;
   },
   getMyOrder: async query => {
-    console.log('query', query);
     const {data} = await axiosInstance.get('v1/order/my-order', {
       params: {...query},
     });
@@ -29,7 +28,7 @@ export const orderApi = {
     return data.data.content || [];
   },
 
-  getOrderDetail: async id => {
+  getOrderProducts: async id => {
     const {data} = await axiosInstance.get(
       `v1/order-detail/get-by-order/${id}`,
     );

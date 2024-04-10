@@ -62,7 +62,7 @@ const Card = ({data, navigation}) => {
               bottom="0"
               px="3"
               py="1.5">
-              PHOTOS
+              {data.categoryDto.name}
             </Center>
           </Box>
           <Stack p="4" space={3}>
@@ -81,7 +81,7 @@ const Card = ({data, navigation}) => {
                 fontWeight="500"
                 ml="-0.5"
                 mt="-1">
-                {data?.categoryDto?.name}
+                {data?.price.toLocaleString('en-US')} VNĐ
               </Text>
             </Stack>
             <Text

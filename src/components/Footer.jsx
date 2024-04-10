@@ -36,19 +36,19 @@ export function Footer() {
         </Pressable>
         <Pressable
           cursor="pointer"
-          opacity={selected === 'Search' ? 1 : 0.5}
+          opacity={selected === 'Category' ? 1 : 0.5}
           py="2"
           flex={1}
-          onPress={() => navigation.navigate('Search')}>
+          onPress={() => navigation.navigate('Category')}>
           <Center>
             <Icon
               mb="1"
-              as={<MaterialIcons name="search" />}
+              as={<MaterialIcons name="category" />}
               color="white"
               size="sm"
             />
             <Text color="white" fontSize="12">
-              Search
+              Category
             </Text>
           </Center>
         </Pressable>

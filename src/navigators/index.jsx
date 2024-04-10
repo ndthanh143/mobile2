@@ -22,7 +22,7 @@ const Stack = createNativeStackNavigator();
 
 export const Navigators = () => {
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator initialRouteName="Sign In">
       <Stack.Screen name="Category" component={CategoryScreen} />
       <Stack.Screen name="Forgot Password" component={ForgotPasswordScreen} />
       <Stack.Screen name="Sign Up" component={SignUpScreen} />

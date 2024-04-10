@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   HStack,
   HamburgerIcon,
@@ -6,11 +6,23 @@ import {
   SearchIcon,
   Text,
   Menu,
+  Icon,
+  AlertDialog,
+  Button,
 } from 'native-base';
+import {MaterialIcons} from '@expo/vector-icons'; // Assuming you're using Expo
 import {useNavigation} from '@react-navigation/native';
+import {NotificationPopup} from './NotificationPopup';
 
 export function AppBar() {
   const navigation = useNavigation();
+
+  // State to manage AlertDialog visibility
+  const [showAlert, setShowAlert] = useState(false);
+
+  const onClose = () => setShowAlert(false);
+  const onOpen = () => setShowAlert(true);
+
   return (
     <>
       <HStack
@@ -21,7 +33,7 @@ export function AppBar() {
         alignItems="center"
         w="100%">
         <HStack alignItems="center">
-          {/* <IconButton icon={<Icon name="home" size={30} color="#000" />} /> */}
+          {/* Menu and Home Text */}
           <Menu
             w="190"
             trigger={triggerProps => {
@@ -39,17 +51,24 @@ export function AppBar() {
             Home
           </Text>
         </HStack>
-        <HStack>
-          {/* <IconButton icon={<Icon name="favorite" size="sm" color="white" />} /> */}
-          {/* <Icon name="home" size={30} color="#000" /> */}
-          {/* <IconButton
-              icon={<Icon name="more-vert" size="sm" color="white" />}
-            /> */}
-          <Pressable onPress={() => navigation.navigate('Search')}>
+        <HStack alignItems="center">
+          {/* Search Icon */}
+          <Pressable onPress={() => navigation.navigate('Search')} mr="3">
             <SearchIcon size="5" color="#ffffff" />
+          </Pressable>
+          {/* Notification Icon */}
+          <Pressable onPress={onOpen}>
+            <Icon
+              as={<MaterialIcons name="notifications" />}
+              size="5"
+              color="#ffffff"
+            />
           </Pressable>
         </HStack>
       </HStack>
+
+      {/* AlertDialog for Notifications */}
+      <NotificationPopup isOpen={showAlert} onClose={onClose} />
     </>
   );
 }

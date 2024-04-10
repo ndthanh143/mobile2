@@ -8,6 +8,7 @@ import {
   Heading,
   Input,
   Link,
+  Toast,
   VStack,
   WarningOutlineIcon,
 } from 'native-base';
@@ -44,6 +45,9 @@ export function SignInScreen({navigation}) {
   useEffect(() => {
     if (profile) {
       navigation.navigate('Home');
+      Toast.show({
+        title: 'Đăng nhập thành công',
+      });
     }
   }, [profile, login, isLoginLoading, logout, navigation]);
 

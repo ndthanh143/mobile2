@@ -58,15 +58,19 @@ export function PaymentScreen({route, navigation}) {
   const {mutate, isPending} = useMutation({
     mutationFn: orderApi.createOrder,
     onSuccess: data => {
+      console.log('data', data);
       setOrder(data);
       if (methodValues[method] === 0) {
-        navigation.navigate('Order Success', {orderId: data.id, method: 'COD'});
+        navigation.navigate('Order Success', {
+          orderId: data.orderId,
+          method: 'COD',
+        });
         return;
       } else {
         mutateTransaction({
           orderId: data.orderId,
-          urlCancel: 'exp://192.168.1.55:8081',
-          urlSuccess: 'exp://192.168.1.55:8081',
+          urlCancel: 'http://localhost:8081/cancel',
+          urlSuccess: 'http://localhost:8081/success',
         });
       }
       console.log('Order created');
@@ -101,7 +105,7 @@ export function PaymentScreen({route, navigation}) {
     }
     if (state.url.includes('success')) {
       navigation.navigate('Order Success', {
-        orderId: order.id,
+        orderId: order.orderId,
         method: 'PayPal',
       });
     }
