@@ -48,7 +48,6 @@ export function SignInScreen({navigation}) {
   }, [profile, login, isLoginLoading, navigation]);
 
   return (
-    isFetched &&
     !profile && (
       <Center w="100%">
         <Box safeArea p="2" py="8" w="90%" maxW="290">

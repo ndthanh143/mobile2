@@ -10,20 +10,15 @@ export const authApi = {
       Buffer.from(`abc_client:abc123`).toString('base64');
 
     console.log(phone, password, grant_type);
-
-    const {data} = await axios.post(
-      `${API_URL}/api/token`,
-      {
-        phone,
-        password,
-        grant_type,
-      },
-      {
-        headers: {
-          Authorization: 'Basic ' + base64Credentials,
-        },
-      },
-    );
+    const {data} = await axiosInstance.post(`api/token`, {
+      phone,
+      password,
+      grant_type,
+    },
+     {
+      headers: {
+        Authorization: 'Basic ' + base64Credentials,      },
+    });
 
     await AsyncStorage.setItem('access_token', data.access_token);
 
