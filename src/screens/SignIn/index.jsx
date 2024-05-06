@@ -8,6 +8,7 @@ import {
   Heading,
   Input,
   Link,
+  Toast,
   VStack,
   WarningOutlineIcon,
 } from 'native-base';
@@ -35,7 +36,7 @@ export function SignInScreen({navigation}) {
     },
   });
 
-  const {profile, isFetched, login, isLoginError, isLoginLoading} = useAuth();
+  const {profile, login, isLoginError, isLoginLoading, logout} = useAuth();
 
   const onSubmit = data => {
     login(data);
@@ -44,12 +45,15 @@ export function SignInScreen({navigation}) {
   useEffect(() => {
     if (profile) {
       navigation.navigate('Home');
+      Toast.show({
+        title: 'Đăng nhập thành công',
+      });
     }
-  }, [profile, login, isLoginLoading, navigation]);
+  }, [profile, login, isLoginLoading, logout, navigation]);
 
   return (
     !profile && (
-      <Center w="100%">
+      <Center w="100%" bgColor="white" height="100%">
         <Box safeArea p="2" py="8" w="90%" maxW="290">
           <Heading
             size="lg"

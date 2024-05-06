@@ -1,28 +1,25 @@
-import {
-  View,
-  Image,
-  Text,
-  Button,
-  Avatar,
-  Box,
-  Center,
-  Heading,
-  VStack,
-  Pressable,
-  useColorModeValue,
-  HStack,
-  Spacer,
-  FlatList,
-  Spinner,
-} from 'native-base';
+import {Button, Box, useColorModeValue, FlatList, Spinner} from 'native-base';
 import {useEffect, useState} from 'react';
-import {Animated, Dimensions} from 'react-native';
-import {SceneMap, TabView} from 'react-native-tab-view';
+import {TabView} from 'react-native-tab-view';
 import {orderApi} from '../../../apis/order';
 import {useQuery} from '@tanstack/react-query';
 import CardOrder from './cardOrder';
 
-const MyOrderScreen = ({navigation}) => {
+const Spiner = () => {
+  return (
+    <Box
+      flex={1}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      py={10}
+      height="100vh">
+      <Spinner color="red.500" size="lg" />
+    </Box>
+  );
+};
+
+const MyOrderScreen = () => {
   const [index, setIndex] = useState(0);
   const tabStates = {
     0: 1,
@@ -30,36 +27,25 @@ const MyOrderScreen = ({navigation}) => {
     2: 3,
   };
   const colorCard = {
-    0: {text: 'Đang xử lý', color: 'yellow.500', orderState: '1'},
-    1: {text: 'Đã giao hàng', color: 'green.500', orderState: '4'},
-    2: {text: 'Đã hủy', color: 'red.700', orderState: '3'},
+    0: {text: 'Đang xử lý', color: 'yellow.500', orderState: 1},
+    1: {text: 'Đã giao hàng', color: 'green.500', orderState: 4},
+    2: {text: 'Đã hủy', color: 'red.700', orderState: 3},
   };
   const {
     data: MyOrder,
-    isLoading,
     isFetching,
+    isFetched,
     refetch: refetchMyOrder,
   } = useQuery({
     queryKey: ['myOrders'],
     queryFn: () => orderApi.getMyOrder({state: tabStates[index]}),
   });
-  useEffect(() => {
-    refetchMyOrder();
-  }, [index]);
 
-  const Spiner = () => {
-    return (
-      <Box
-        flex={1}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        py={10}
-        height="100vh">
-        <Spinner color="red.500" size="lg" />
-      </Box>
-    );
-  };
+  useEffect(() => {
+    if (isFetched) {
+      refetchMyOrder();
+    }
+  }, [index]);
 
   const DataRoute = () => {
     return (
@@ -68,19 +54,12 @@ const MyOrderScreen = ({navigation}) => {
         mt={5}
         keyExtractor={item => item.id.toString()}
         renderItem={({item}) => (
-          <CardOrder
-            data={item}
-            colorCard={colorCard[index]}
-            navigation={navigation}
-          />
+          <CardOrder data={item} colorCard={colorCard[index]} />
         )}
       />
     );
   };
 
-  const initialLayout = {
-    width: Dimensions.get('window').width,
-  };
   const renderScene = ({route}) => {
     switch (route.key) {
       case 'first':
@@ -157,7 +136,6 @@ const MyOrderScreen = ({navigation}) => {
       renderScene={renderScene}
       renderTabBar={renderTabBar}
       onIndexChange={setIndex}
-      // initialLayout={initialLayout}
     />
   );
 };

@@ -22,18 +22,13 @@ import {useNavigation} from '@react-navigation/native';
 import {Pressable} from 'react-native';
 
 const ProfileScreen = ({navigation}) => {
-  const [data, setData] = useState(null);
   const {profile, login, isLoginError, isLoginLoading, logout} = useAuth();
-  useEffect(() => {
-    if (profile) {
-      setData(profile);
-    }
-  }, []);
 
   const handleLogout = () => {
     logout();
     navigation.navigate('Sign In');
   };
+
   const {isOpen, onOpen, onClose} = useDisclose();
   return (
     <Flex direction="column" justify="space-between" height="100%">
@@ -50,7 +45,7 @@ const ProfileScreen = ({navigation}) => {
             py="2"
             px="5">
             <HStack space={[2, 3]} justifyContent="start" alignItems="center">
-              <Avatar size="88px" source={{uri: data?.avatar}} />
+              <Avatar size="88px" source={{uri: profile.avatar}} />
               <VStack>
                 <Text
                   _dark={{
@@ -59,7 +54,7 @@ const ProfileScreen = ({navigation}) => {
                   color="coolGray.800"
                   bold
                   fontSize="2xl">
-                  {data?.fullName}
+                  {profile.fullName}
                 </Text>
                 <Text
                   color="coolGray.600"
@@ -67,7 +62,7 @@ const ProfileScreen = ({navigation}) => {
                     color: 'warmGray.200',
                   }}
                   fontSize="md">
-                  {data?.email}
+                  {profile.email}
                 </Text>
               </VStack>
               {/* <Spacer /> */}
@@ -164,6 +159,30 @@ const ProfileScreen = ({navigation}) => {
                   </Text>
                 </VStack>
                 <ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />
+              </Flex>
+            </Button>
+            <Button
+              onPress={handleLogout}
+              mt={2}
+              // endIcon={<ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />}
+              backgroundColor={'#f9f9f9'}
+              // variant="ghost"
+            >
+              <Flex
+                direction="row"
+                justify="space-between"
+                align="start"
+                w={'100%'}>
+                <VStack>
+                  <Text fontSize={'xl'} color={'#2f2f2f'} bold>
+                    Đăng xuất
+                  </Text>
+                  <Text fontSize={'sm'} color={'#2f2f2f'}>
+                    Đăng xuất khỏi tài khoản
+                  </Text>
+                </VStack>
+                <Box></Box>
+                {/* <ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" /> */}
               </Flex>
             </Button>
           </Box>

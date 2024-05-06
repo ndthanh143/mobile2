@@ -1,13 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useEffect, useState} from 'react';
 
-export function useCart() {
+export function useFavorite() {
   const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(true);
 
-  const getCart = async () => {
+  const getFavorites = async () => {
     try {
-      const jsonValue = await AsyncStorage.getItem('@cart');
+      const jsonValue = await AsyncStorage.getItem('@favorite');
 
       const result = await (jsonValue != null ? JSON.parse(jsonValue) : []);
       setData(result);
@@ -19,39 +19,36 @@ export function useCart() {
     }
   };
 
-  const saveCart = async cart => {
+  const saveFavorite = async cart => {
     try {
       const jsonValue = JSON.stringify(cart);
-      await AsyncStorage.setItem('@cart', jsonValue);
+      await AsyncStorage.setItem('@favorite', jsonValue);
     } catch (e) {
       console.error('Error saving cart to AsyncStorage', e);
     }
   };
 
-  const addItemToCart = async item => {
+  const addItemToFavorite = async item => {
     try {
-      const cart = await getCart();
-      const findItem = cart.find(
-        cartItem =>
-          cartItem.id === item.id && cartItem.variant.id === item.variant.id,
-      );
+      const favorites = await getFavorites();
+      const findItem = favorites.find(cartItem => cartItem.id === item.id);
 
-      const updatedCart = findItem
-        ? [...cart, {...findItem, quantity: findItem.quantity + item.quantity}]
-        : [...cart, item];
-      await saveCart(updatedCart);
-      setData(updatedCart);
+      const updatedFavorite = findItem
+        ? [...favorites, findItem]
+        : [...favorites, item];
+      await saveFavorite(updatedFavorite);
+      setData(updatedFavorite);
       console.log('Item added to cart');
     } catch (e) {
       console.error('Error adding item to cart', e);
     }
   };
 
-  const removeItemFromCart = async itemId => {
+  const removeItemFromFavorite = async itemId => {
     try {
-      const cart = await getCart();
+      const cart = await getFavorites();
       const updatedCart = cart.filter(item => item.id !== itemId); // Assuming each item has a unique `id`
-      await saveCart(updatedCart);
+      await saveFavorite(updatedCart);
       setData(updatedCart);
 
       console.log('Item removed from cart');
@@ -61,19 +58,19 @@ export function useCart() {
   };
 
   useEffect(() => {
-    const getCartData = async () => {
-      await getCart();
+    const getFavoriteData = async () => {
+      await getFavorites();
     };
 
-    getCartData();
+    getFavoriteData();
   }, []);
 
   return {
     data,
     isLoading,
-    getCart,
-    saveCart,
-    addItemToCart,
-    removeItemFromCart,
+    getFavorites,
+    saveFavorite,
+    addItemToFavorite,
+    removeItemFromFavorite,
   };
 }

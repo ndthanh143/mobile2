@@ -3,6 +3,7 @@ import {
   CartScreen,
   CategoryScreen,
   EditInfoScreen,
+  FavoriteScreen,
   ForgotPasswordScreen,
   HomeScreen,
   InfoScreen,
@@ -23,7 +24,7 @@ const Stack = createNativeStackNavigator();
 
 export const Navigators = () => {
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator initialRouteName="Sign In">
       <Stack.Screen name="Category" component={CategoryScreen} />
       <Stack.Screen name="Forgot Password" component={ForgotPasswordScreen} />
       <Stack.Screen name="Sign Up" component={SignUpScreen} />
@@ -41,6 +42,7 @@ export const Navigators = () => {
       <Stack.Screen name="Order Detail" component={OrderDetailScreen} />
       <Stack.Screen name="Edit Info" component={EditInfoScreen} />
       <Stack.Screen name="My Address" component={MyAddressScreen} />
+      <Stack.Screen name="Favorite" component={FavoriteScreen} />
     </Stack.Navigator>
   );
 };

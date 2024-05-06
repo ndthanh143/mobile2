@@ -1,11 +1,7 @@
 import {axiosInstance} from '../axios';
 
 export const reviewApi = {
-  createReview: async ({
-    orderDetailId,
-      message,
-      star,
-  }) => {
+  createReview: async ({orderDetailId, message, star = 5}) => {
     const {data} = await axiosInstance.post('v1/review/create', {
       orderDetailId,
       message,
@@ -13,21 +9,17 @@ export const reviewApi = {
     });
     return data.data;
   },
-  
-  getUnratedProduct: async query  => {
-    const {data} = await axiosInstance.get(
-      `v1/review/get-unrated-product`, {
-        params: {...query},
-      });
+
+  getUnratedProduct: async query => {
+    const {data} = await axiosInstance.get(`v1/review/get-unrated-product`, {
+      params: {...query},
+    });
 
     return data.data;
   },
 
   getReviewProduct: async id => {
-    console.log('id',id);
-    const {data} = await axiosInstance.get(
-      `v1/review/get-by-product/${id}`,
-    );
+    const {data} = await axiosInstance.get(`v1/review/get-by-product/${id}`);
 
     return data.data.content;
   },
@@ -40,12 +32,10 @@ export const reviewApi = {
     return data.data.content;
   },
 
-  getByProductPublic: async query => {
-    console.log(query)
+  getByProductPublic: async id => {
     const {data} = await axiosInstance.get(
-      `v1/review/get-by-product-public`, {
-        params: {...query}
-      }
+      `v1/review/get-by-product-public/${id}`,
+      {},
     );
 
     return data.data.content;

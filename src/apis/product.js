@@ -15,6 +15,11 @@ export const productApi = {
 
     return data.data;
   },
+  getProductTop10: async () => {
+    const {data} = await axiosInstance.get('v1/product/get-product-top10');
+
+    return data.data || [];
+  },
   getDetail: async id => {
     const {data} = await axiosInstance.get(`v1/product/get-autoComplete/${id}`);
 

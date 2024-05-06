@@ -7,15 +7,44 @@ import {
   Text,
   View,
 } from 'native-base';
+import {useEffect} from 'react';
+import {useCart} from '../../hooks';
+import {useQuery} from '@tanstack/react-query';
+import {orderApi} from '../../apis';
+import {LoadingContainer} from '../../components';
 
 export function OrderSuccessScreen({route, navigation}) {
-  const {orderId} = route.params;
+  const {orderId, method} = route.params;
+
+  console.log('method', method === 'COD');
+
+  const {isLoading, data} = useQuery({
+    queryKey: ['my-order'],
+    queryFn: () => orderApi.getMyOrder(),
+  });
+
+  const {saveCart} = useCart();
 
   const handleViewOrder = () => {
-    navigation.navigate('Order Detail', {id: orderId});
+    console.log('orderId', orderId);
+    const orderData = data?.find(item => item.id === orderId);
+    if (orderData) {
+      navigation.navigate('Order Detail', {
+        id: orderId,
+        orderData,
+      });
+    } else {
+      navigation.navigate('My Order');
+    }
   };
 
-  return (
+  useEffect(() => {
+    saveCart([]);
+  }, []);
+
+  return isLoading ? (
+    <LoadingContainer />
+  ) : (
     <View width="full" height="full" bgColor="white" style={{gap: 30}}>
       <Container
         mx="auto"
@@ -25,7 +54,11 @@ export function OrderSuccessScreen({route, navigation}) {
         alignItems="center"
         justifyContent="center"
         style={{gap: 40}}>
-        <Heading mx="auto">Thanh toán thành công</Heading>
+        {method === 'COD' ? (
+          <Heading mx="auto">Đặt hàng thành công</Heading>
+        ) : (
+          <Heading mx="auto">Thanh toán thành công</Heading>
+        )}
         <Box
           borderRadius="full"
           borderWidth={4}

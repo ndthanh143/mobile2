@@ -2,16 +2,20 @@ import {Box, Button, Center, HStack, Text, VStack} from 'native-base';
 import {convertUtcToLocalTime, formatMoney} from '../../../utils';
 import {DATE_FORMAT_VALUE, DEFAULT_FORMAT} from '../../../constants';
 import {useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
 
-const CardOrder = ({data, colorCard, navigation}) => {
+const CardOrder = ({data, colorCard}) => {
+  const navigation = useNavigation();
+
   const [loading, setLoading] = useState(false);
   const onCLick = () => {
     setLoading(true);
-    navigation.navigate('Order Detail', {
-      id: data?.id,
-      orderData: data,
-      orderState: colorCard?.orderState,
-    });
+    if (data) {
+      navigation.navigate('Order Detail', {
+        id: data.id,
+        orderData: data,
+      });
+    }
   };
   return (
     <Center flex={1} my="2">

@@ -12,3 +12,4 @@ export * from './OrderDetail';
 export * from './Profile/editInfo';
 export * from './Profile/info';
 export * from './Profile/MyAddress';
+export * from './Favorite';

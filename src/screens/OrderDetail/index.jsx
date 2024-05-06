@@ -1,4 +1,3 @@
-import {ScrollView} from 'react-native';
 import {
   Box,
   Text,
@@ -11,11 +10,9 @@ import {
   Image,
   Modal,
   FormControl,
-  Input,
   Pressable,
   TextArea,
   Center,
-  Avatar,
   Heading,
   Icon,
   useToast,
@@ -24,40 +21,24 @@ import {useMutation, useQuery} from '@tanstack/react-query';
 import {orderApi} from '../../apis/order';
 import {formatMoney, limitCharacters} from '../../utils';
 import {useEffect, useState} from 'react';
-import star from '../../assets/icons/star.svg';
-import {MaterialCommunityIcons, MaterialIcons} from '@expo/vector-icons';
-import {Controller, useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {reviewApi} from '../../apis/review';
-import * as yup from 'yup';
 import {AirbnbRating} from 'react-native-ratings';
-
-const schema = yup.object().shape({
-  message: yup.string().required('Vui lòng điền nội dung!'),
-});
+import {LoadingContainer} from '../../components';
 
 const OrderDetailPage = ({route}) => {
-  const {id, orderData, orderState} = route.params;
+  const {id, orderData} = route.params;
+
+  const orderState = orderData.state;
   const [showModal, setShowModal] = useState(false);
-  const [item, setItem] = useState([]);
+  const [selectedProduct, setProductSelected] = useState([]);
   const [formData, setData] = useState({});
   const toast = useToast();
-  const [arrayData, setArrayData] = useState({});
-  const [message, setMessage] = useState('123');
+  const [arrayData, setArrayData] = useState([]);
 
-  const {
-    control,
-    handleSubmit,
-    register,
-    formState: {errors},
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-
-  const {mutate, data} = useMutation({
+  const {mutate: mutateCreateReview} = useMutation({
     mutationFn: payload => reviewApi.createReview(payload),
     onSuccess: () => {
-      console.log('Đã đánh giá');
       setShowModal(false);
       toast.show({
         placement: 'top',
@@ -71,13 +52,13 @@ const OrderDetailPage = ({route}) => {
       });
     },
     onError: error => {
-      console.log('error', error);
+      console.log(error);
       toast.show({
         placement: 'bottom',
         render: () => {
           return (
             <Box bg="red.600" px="2" py="1" rounded="sm" mb={5}>
-              Bạn đã tạo đánh giá cho sản phẩm này
+              Đánh giá không thành công, vui lòng thử lại
             </Box>
           );
         },
@@ -88,15 +69,16 @@ const OrderDetailPage = ({route}) => {
 
   const {
     data: detail,
-    isLoading,
+    isFetching,
     refetch,
+    isFetched,
   } = useQuery({
-    queryKey: ['detailOrder'],
-    queryFn: () => orderApi.getOrderDetail(id),
+    queryKey: ['detailOrder', id],
+    queryFn: () => orderApi.getOrderProducts(id),
   });
 
-  const {data: unRatedData} = useQuery({
-    queryKey: ['unratedProduct'],
+  const {data: unRatedData, refetch: refetchRatedProduct} = useQuery({
+    queryKey: ['unratedProduct', id],
     queryFn: () =>
       reviewApi.getUnratedProduct({
         orderId: id,
@@ -104,33 +86,37 @@ const OrderDetailPage = ({route}) => {
   });
 
   useEffect(() => {
-    let newArray1 = {};
+    if (id && isFetched) {
+      refetch();
+      refetchRatedProduct();
+    }
+  }, [id]);
+
+  useEffect(() => {
+    let newArray1 = [];
     if (
       Array.isArray(detail) &&
       Array.isArray(unRatedData) &&
       unRatedData?.length !== 0
     ) {
       newArray1 = detail.map(item1 => {
-        const existsInArray2 = unRatedData.some(
+        const existsInArray2 = unRatedData.find(
           item2 => item2.rateProductDto.id === item1.productId,
         );
         return {
           ...item1,
-          rated: existsInArray2 ? 1 : 0,
+          rated: Boolean(existsInArray2),
         };
       });
       setArrayData(newArray1);
     } else {
       setArrayData(detail);
     }
-  }, [refetch]);
+  }, [isFetching]);
 
-  const {data: reviewProduct, refetch: reviewProductRefetch} = useQuery({
-    queryKey: ['reviewProduct', item.productId], // Thêm item?.id vào queryKey
-    queryFn: () => reviewApi.getReviewProduct(item?.productId), // Truyền item?.id vào hàm queryFn
-    onSuccess: data => {
-      console.log(data);
-    },
+  const {data: reviewProduct} = useQuery({
+    queryKey: ['reviewProduct', selectedProduct.productId], // Thêm item?.id vào queryKey
+    queryFn: () => reviewApi.getReviewProduct(selectedProduct?.productId), // Truyền item?.id vào hàm queryFn
   });
 
   if (!id) {
@@ -142,19 +128,19 @@ const OrderDetailPage = ({route}) => {
   }
 
   const handleConfirmOrder = item => {
-    setItem(item);
-    orderState === '4' ? setShowModal(true) : null;
+    setProductSelected(item);
+    Number(orderState) === 4 ? setShowModal(true) : null;
   };
 
   const onSubmit = () => {
-    mutate({
-      orderDetailId: item.id,
+    mutateCreateReview({
+      orderDetailId: selectedProduct.id,
       ...formData,
     });
   };
 
   const renderItem = ({item}) =>
-    arrayData ? (
+    arrayData.length > 0 ? (
       <Pressable onPress={() => handleConfirmOrder(item)}>
         <Box
           borderWidth="1.5"
@@ -201,7 +187,7 @@ const OrderDetailPage = ({route}) => {
               </Text>
             </VStack>
           </HStack>
-          {orderState === '4' && (
+          {Number(orderState) === 4 && (
             <HStack
               bg="blue.500"
               position="absolute"
@@ -215,7 +201,7 @@ const OrderDetailPage = ({route}) => {
                 m={0.5}
               />
               <Text color={'white'} style={{fontWeight: '600'}} mr={1}>
-                {item.rated !== undefined
+                {item.rated
                   ? item.rated === 1
                     ? 'Đã đánh giá'
                     : 'Cần đánh giá'
@@ -230,7 +216,9 @@ const OrderDetailPage = ({route}) => {
       <Spinner />
     );
 
-  return (
+  return isFetching ? (
+    <LoadingContainer />
+  ) : (
     <Box p={2}>
       <Text
         fontSize="2xl"
@@ -284,13 +272,10 @@ const OrderDetailPage = ({route}) => {
       />
       <Button
         mx={'8px'}
+        borderRadius="full"
         colorScheme="red"
         _text={{fontWeight: '600', fontSize: 'lg'}}>
-        {orderState === '4'
-          ? 'Đánh giá'
-          : orderState === '3'
-          ? 'Mua lại'
-          : 'Xác nhận'}
+        {orderState === 4 ? 'Đánh giá' : 'Huỷ đơn hàng'}
       </Button>
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <Modal.Content maxWidth="400px">
@@ -302,19 +287,19 @@ const OrderDetailPage = ({route}) => {
                 size="lg"
                 borderRadius={'sm'}
                 source={{
-                  uri: item?.image,
+                  uri: selectedProduct?.image,
                 }}
                 alt="null"
               />
               <Heading size="sm" m={2}>
-                {limitCharacters(item.name, 24)}
+                {limitCharacters(selectedProduct.name, 24)}
               </Heading>
               <AirbnbRating
                 reviews={['Rất tệ', 'Tệ', 'Khá tốt', 'Tốt', 'Xuất sắc']}
                 count={5}
                 showRating={false}
                 size={15}
-                defaultRating={reviewProduct ? reviewProduct[0].star : 3}
+                defaultRating={reviewProduct && reviewProduct[0].star}
                 isDisabled={reviewProduct ? true : false}
                 onChangeText={value => setData({...formData, star: value})}
               />
