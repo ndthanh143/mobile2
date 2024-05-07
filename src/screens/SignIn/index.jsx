@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Box,
   Button,
@@ -8,6 +8,7 @@ import {
   Heading,
   Input,
   Link,
+  Select,
   Toast,
   VStack,
   WarningOutlineIcon,
@@ -19,11 +20,13 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import {useAuth} from '../../hooks';
 
 const schema = object({
-  phone: string().required(),
-  password: string().required(),
+  phone: string().required('Vui lòng nhập số điện thoại'),
+  password: string().required('Vui lòng nhập mật khẩu'),
+  grant_type: string().required(),
 });
 
 export function SignInScreen({navigation}) {
+  const [grantType, setGrantType] = useState('user');
   const {
     control,
     handleSubmit,
@@ -33,6 +36,7 @@ export function SignInScreen({navigation}) {
     defaultValues: {
       phone: '0965456023',
       password: '123456',
+      grant_type: grantType,
     },
   });
 
@@ -92,7 +96,7 @@ export function SignInScreen({navigation}) {
               />
               <FormControl.ErrorMessage
                 leftIcon={<WarningOutlineIcon size="xs" />}>
-                {/* {errors.phone.message} */}
+                {errors.phone?.message}
               </FormControl.ErrorMessage>
             </FormControl>
             <FormControl isInvalid={errors.password}>
@@ -112,26 +116,40 @@ export function SignInScreen({navigation}) {
               />
               <FormControl.ErrorMessage
                 leftIcon={<WarningOutlineIcon size="xs" />}>
-                {/* {errors.password.message} */}
+                {errors.password?.message}
               </FormControl.ErrorMessage>
 
               {isLoginError && ( // Render error message if there's an error
-                <Text color="red" fontSize="xs">
-                  Đăng nhập không thành công. Vui lòng thử lại.
+                <Text color="red.500" fontSize="xs">
+                  Tài khoản hoặc mật khẩu không chính xác
                 </Text>
               )}
-              <Link
-                _text={{
-                  fontSize: 'xs',
-                  fontWeight: '500',
-                  color: 'indigo.500',
-                }}
-                alignSelf="flex-end"
-                mt="1"
-                onPress={() => navigation.navigate('Forgot Password')}>
-                Quên mật khẩu?
-              </Link>
             </FormControl>
+            <FormControl isInvalid={errors.grant_type}>
+              <FormControl.Label>Loại tài khoản</FormControl.Label>
+              <Select
+                selectedValue={grantType}
+                minWidth="200"
+                onValueChange={itemValue => setGrantType(itemValue)}>
+                <Select.Item label="User" value="user" />
+                <Select.Item label="Admin" value="password" />
+              </Select>
+              <FormControl.ErrorMessage
+                leftIcon={<WarningOutlineIcon size="xs" />}>
+                {errors.grant_type?.message}
+              </FormControl.ErrorMessage>
+            </FormControl>
+            <Link
+              _text={{
+                fontSize: 'xs',
+                fontWeight: '500',
+                color: 'indigo.500',
+              }}
+              alignSelf="flex-end"
+              mt="1"
+              onPress={() => navigation.navigate('Forgot Password')}>
+              Quên mật khẩu?
+            </Link>
             <Button
               mt="2"
               colorScheme="red"

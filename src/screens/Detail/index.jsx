@@ -1,6 +1,5 @@
 import {Image, View} from 'react-native';
 import {
-  Actionsheet,
   Box,
   Button,
   ChevronRightIcon,
@@ -9,7 +8,6 @@ import {
   Flex,
   Heading,
   Icon,
-  NativeBaseProvider,
   Pressable,
   ScrollView,
   Text,
@@ -25,9 +23,8 @@ import {useCart, useFavorite} from '../../hooks';
 import {useEffect, useState} from 'react';
 import {LoadingContainer} from '../../components';
 import {reviewApi} from '../../apis/review';
-import {StarProgress} from './starProgress';
-import CardStar from './cardStar';
-import {MaterialIcons} from '@expo/vector-icons'; // Make sure to install @expo/vector-icons if using Expo, or use react-native-vector-icons
+import {MaterialIcons} from '@expo/vector-icons';
+import {Reviews} from './components';
 
 export function DetailScreen({route, navigation}) {
   const {id} = route.params;
@@ -55,16 +52,7 @@ export function DetailScreen({route, navigation}) {
     enabled: Boolean(detail),
   });
 
-  const {data: listReview, refetch: refetchReview} = useQuery({
-    queryKey: ['listReviewData', id],
-    queryFn: () => reviewApi.getByProductPublic(id),
-  });
-
-  const {isOpen, onOpen, onClose} = useDisclose();
-
-  useEffect(() => {
-    refetchReview();
-  }, [id]);
+  const {onOpen} = useDisclose();
 
   const handleAddToCart = async () => {
     setIsLoadingAddToCart(true);
@@ -106,24 +94,20 @@ export function DetailScreen({route, navigation}) {
         ? 'Đã xoá sản phẩm khỏi mục yêu thích'
         : 'Đã thêm sản phẩm vào mục yêu thích',
     });
-    // Here, you'd also update your persistent store (local storage, API, etc.)
   };
-
-  console.log('listReview', listReview);
 
   return isLoading ? (
     <LoadingContainer />
   ) : (
     detail && (
       <View backgroundColor="white">
-        <ScrollView paddingBottom={100}>
-          <Container mx={0}>
+        <ScrollView>
+          <Container mx={0} paddingBottom={40}>
             <Image
               source={{
                 uri: `${detail.image}`,
               }}
-              // width={'100%'}
-              style={{width: '100%', height: 200}} // You can adjust the width and height as needed
+              style={{width: '100%', height: 200}}
             />
             <Flex direction="column" align="start" mx={3} my={3} w={'115%'}>
               <Flex
@@ -175,7 +159,7 @@ export function DetailScreen({route, navigation}) {
                 </Text>
                 <Flex direction="row" flexWrap="wrap" style={{gap: 8}}>
                   {detail.listProductVariant.map(item => (
-                    <Pressable onPress={() => setColor(item)}>
+                    <Pressable onPress={() => setColor(item)} key={item.id}>
                       <Flex
                         key={item.id}
                         borderWidth={1}
@@ -262,24 +246,8 @@ export function DetailScreen({route, navigation}) {
                   <ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />
                 </Flex>
               </Button>
-              {listReview && (
-                <Flex direction="column" align="center" mt={2}>
-                  <Heading color={'rgba(250,219,20,255)'}>
-                    Đánh giá sản phẩm
-                  </Heading>
-                  <Box>
-                    <StarProgress />
-                  </Box>
-                  <Box w={'100%'}>
-                    <FlatList
-                      data={listReview}
-                      mt={5}
-                      keyExtractor={item => item.id}
-                      renderItem={({item}) => <CardStar data={item} />}
-                    />
-                  </Box>
-                </Flex>
-              )}
+              <Reviews productId={id} />
+
               <Flex
                 direction="row"
                 justify="space-between"
@@ -292,34 +260,13 @@ export function DetailScreen({route, navigation}) {
               </Flex>
               <View>
                 <ScrollView horizontal={true} mt={3}>
-                  {products?.map(item => {
-                    return (
-                      <View style={{marginLeft: 5}} key={item?.id}>
-                        <Card data={item} navigation={navigation} />
-                      </View>
-                    );
-                  })}
+                  {products?.map(item => (
+                    <View style={{marginLeft: 5}} key={item?.id}>
+                      <Card data={item} navigation={navigation} />
+                    </View>
+                  ))}
                 </ScrollView>
               </View>
-              <Actionsheet isOpen={isOpen} onClose={onClose}>
-                <Actionsheet.Content>
-                  <Box w="100%" h={60} px={4} justifyContent="center">
-                    <Text
-                      fontSize="16"
-                      color="gray.500"
-                      _dark={{
-                        color: 'gray.300',
-                      }}>
-                      Albums
-                    </Text>
-                  </Box>
-                  <Actionsheet.Item>Delete</Actionsheet.Item>
-                  <Actionsheet.Item isDisabled>Share</Actionsheet.Item>
-                  <Actionsheet.Item>Play</Actionsheet.Item>
-                  <Actionsheet.Item>Favourite</Actionsheet.Item>
-                  <Actionsheet.Item>Cancel</Actionsheet.Item>
-                </Actionsheet.Content>
-              </Actionsheet>
             </Flex>
           </Container>
         </ScrollView>

@@ -27,9 +27,12 @@ export const productApi = {
   },
 
   getRelatedProduct: async (id, query) => {
-    const {data} = await axiosInstance.get(`v1/product/get-product-related/${id}`, {
-      params: {...query},
-    });
+    const {data} = await axiosInstance.get(
+      `v1/product/get-product-related/${id}`,
+      {
+        params: {...query},
+      },
+    );
 
     return data.data;
   },

@@ -39,7 +39,6 @@ export const useAuth = () => {
     mutationFn: payload => authApi.signIn(payload),
     onSuccess: () => {
       getToken();
-      console.log('Haha');
     },
     onError: (error) => {
       console.log("login",error);

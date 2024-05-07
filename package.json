@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.15.14",
     "@mui/material": "^5.15.14",
     "@react-native-async-storage/async-storage": "1.21.0",
+    "@react-native-community/datetimepicker": "7.6.1",
     "@react-native-vector-icons/material-icons": "^0.0.1-alpha.7",
     "@react-navigation/drawer": "^6.6.15",
     "@react-navigation/native": "^6.1.12",

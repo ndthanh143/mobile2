@@ -11,66 +11,69 @@ import {
   Image,
   Heading,
   Spacer,
-  Spinner,
+  Flex,
+  Skeleton,
 } from 'native-base';
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
 import {categoryService, productApi} from '../../apis';
 import {ActivityIndicator} from 'react-native';
 
+const ProductSkeleton = () => {
+  return (
+    <Flex direction="row">
+      <Box width={'28%'}>
+        <Skeleton my={2} height={120} />
+      </Box>
+      <Box flex={1}>
+        <Skeleton.Text px={4} lines={2} my={2} />
+        <Skeleton.Text px={4} lines={3} my={2} />
+      </Box>
+    </Flex>
+  );
+};
+
 export const CategoryScreen = ({navigation}) => {
-  const queryClient = useQueryClient();
+  const [selectedCategory, setSelectedCategory] = useState();
 
-  const [selectedCategory, setSelectedCategory] = useState('');
-
-  // Sample categories and products data
-
-  const {data: categories, isLoading: isLoadingCategories} = useQuery({
+  const {
+    data: categories,
+    isLoading: isLoadingCategories,
+    isFetched: isFetchedCategories,
+  } = useQuery({
     queryKey: ['categories'],
     queryFn: () => categoryService.getAll(),
   });
 
-  const fetchProducts = async ({pageParam = 1}) => {
-    // Assuming page starts from 0, adjust if it starts from 1
-    const categoryName = categories?.content[selectedCategory]?.name;
-
+  const fetchProducts = async ({pageParam = 0, categoryName}) => {
     if (!categoryName) {
-      // Handle the case where the category name is not available.
       return;
     }
 
     const data = await productApi.getProductList({
       categoryName: categoryName,
       page: pageParam,
-      size: 5, // Assuming 'size' controls the number of items per page
+      size: 5,
     });
 
     return {
-      content: data.content, // Extract the products from the response
-      nextPage: pageParam + 1 < data.totalPages ? pageParam + 1 : undefined, // Determine the next page
+      content: data.content,
+      nextPage: pageParam + 1 < data.totalPages ? pageParam + 1 : undefined,
     };
   };
 
   const {
     data: products,
     isLoading: isLoadingProducts,
-    isFetching: isFetchingProducts,
     fetchNextPage,
     hasNextPage,
+    isFetched: isFetchedProductsCategory,
     refetch: refetchProducts,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: [
-      'product-category',
-      categories?.content?.[selectedCategory]?.name,
-    ],
-    queryFn: fetchProducts,
+    queryKey: ['product-category', selectedCategory],
+    queryFn: ({pageParam}) =>
+      fetchProducts({pageParam, categoryName: selectedCategory}),
     getNextPageParam: (lastPage, allPages) => {
-      // Determine if there's a next page. This depends on your API's response structure.
-      // Example assumes your API returns something like { data: [...], nextPage: 2 }
       return lastPage.nextPage ?? false;
     },
     enabled: Boolean(selectedCategory),
@@ -79,23 +82,6 @@ export const CategoryScreen = ({navigation}) => {
   const handleLoadMore = () => {
     if (hasNextPage) fetchNextPage();
   };
-
-  console.log('length:', products?.pages?.flatMap(page => page.content).length);
-  console.log('hasNextPage', hasNextPage);
-
-  useEffect(() => {
-    if (categories?.content?.length > 0) {
-      setSelectedCategory(1);
-    }
-  }, [categories]);
-
-  useEffect(() => {
-    if (Boolean(selectedCategory)) {
-      queryClient.invalidateQueries({queryKey: ['product-category']});
-    }
-  }, [selectedCategory, queryClient]);
-
-  const data = products?.pages.flatMap(page => page.content) || [];
 
   const renderItem = ({item}) =>
     item && (
@@ -145,15 +131,30 @@ export const CategoryScreen = ({navigation}) => {
       </Pressable>
     );
 
+  useEffect(() => {
+    if (categories?.content?.length > 0) {
+      setSelectedCategory(categories.content[0].name);
+    }
+  }, [categories]);
+
+  useEffect(() => {
+    if (isFetchedProductsCategory) {
+      refetchProducts();
+    }
+  }, [selectedCategory]);
+
+  const data = products?.pages.flatMap(page => page.content) || [];
+
   return isLoadingCategories ? (
     <Box py={4}>
-      <ActivityIndicator size="large" color="#0000ff" />
+      <ProductSkeleton />
+      <ProductSkeleton />
+      <ProductSkeleton />
     </Box>
   ) : (
-    <Box flex={1} p="5">
+    <Box flex={1} p="5" bgColor="white">
       <VStack space={4} flex={1}>
         <Select
-          selectedValue={selectedCategory}
           minWidth="200"
           accessibilityLabel="Choose Category"
           placeholder="Choose Category"
@@ -162,30 +163,46 @@ export const CategoryScreen = ({navigation}) => {
             endIcon: <CheckIcon size="5" color="red.500" />,
           }}
           mt={1}
+          selectedValue={selectedCategory} // This ensures the Select shows the currently selected category
           onValueChange={itemValue => setSelectedCategory(itemValue)}>
-          {categories?.content.map((category, index) => (
+          {categories?.content.map(category => (
             <Select.Item
               label={category.name}
-              value={index}
+              value={category.name} // Use category name as value for simplicity
               key={category.id}
             />
           ))}
         </Select>
 
-        <FlatList
-          data={data}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={() =>
-            isFetchingNextPage ? (
-              <Box py={4}>
-                <ActivityIndicator size="large" color="#0000ff" />
-              </Box>
-            ) : null
-          }
-          renderItem={renderItem}
-          keyExtractor={item => item?.id.toString()}
-        />
+        {isLoadingProducts ? (
+          <Box>
+            <Box py={4}>
+              <ProductSkeleton />
+            </Box>
+            <Box py={4}>
+              <ProductSkeleton />
+            </Box>
+            <Box py={4}>
+              <ProductSkeleton />
+            </Box>
+          </Box>
+        ) : (
+          <FlatList
+            data={data}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={() =>
+              isFetchingNextPage ? (
+                <Box py={4}>
+                  <ProductSkeleton />
+                </Box>
+              ) : null
+            }
+            renderItem={renderItem}
+            keyExtractor={item => item?.id.toString()}
+          />
+        )}
+
         {!data.length && <Text>No products found</Text>}
       </VStack>
     </Box>

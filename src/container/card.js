@@ -16,7 +16,6 @@ import {limitCharacters} from '../utils';
 const Card = ({data, navigation}) => {
   const onCLick = () => {
     navigation.navigate('Detail', {id: data?.id});
-    console.log('onCLickkkkkk');
   };
 
   return (
