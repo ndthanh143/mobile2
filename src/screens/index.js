@@ -9,4 +9,7 @@ export * from './Category';
 export * from './payment';
 export * from './order';
 export * from './OrderDetail';
+export * from './Profile/editInfo';
+export * from './Profile/info';
+export * from './Profile/MyAddress';
 export * from './Favorite';

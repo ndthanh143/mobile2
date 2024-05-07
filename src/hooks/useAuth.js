@@ -41,6 +41,9 @@ export const useAuth = () => {
       getToken();
       console.log('Haha');
     },
+    onError: (error) => {
+      console.log("login",error);
+    },
   });
 
   const logout = async () => {

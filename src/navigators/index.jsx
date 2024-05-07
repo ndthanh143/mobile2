@@ -2,9 +2,12 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
   CartScreen,
   CategoryScreen,
+  EditInfoScreen,
   FavoriteScreen,
   ForgotPasswordScreen,
   HomeScreen,
+  InfoScreen,
+  MyAddressScreen,
   OrderSuccessScreen,
   PaymentMethodScreen,
   PaymentScreen,
@@ -14,7 +17,6 @@ import {
 } from '../screens';
 import {DetailScreen} from '../screens/Detail';
 import ProfileScreen from '../screens/Profile';
-import InfoScreen from '../screens/Profile/info/index';
 import MyOrderScreen from '../screens/Profile/MyOrder';
 import OrderDetailScreen from '../screens/OrderDetail';
 
@@ -38,6 +40,8 @@ export const Navigators = () => {
       <Stack.Screen name="Payment" component={PaymentScreen} />
       <Stack.Screen name="Order Success" component={OrderSuccessScreen} />
       <Stack.Screen name="Order Detail" component={OrderDetailScreen} />
+      <Stack.Screen name="Edit Info" component={EditInfoScreen} />
+      <Stack.Screen name="My Address" component={MyAddressScreen} />
       <Stack.Screen name="Favorite" component={FavoriteScreen} />
     </Stack.Navigator>
   );

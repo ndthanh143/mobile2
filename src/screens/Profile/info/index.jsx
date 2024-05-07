@@ -13,7 +13,7 @@ import {
 import {useEffect, useState} from 'react';
 import {useAuth} from '../../../hooks';
 
-const InfoScreen = ({navigator}) => {
+export const InfoScreen = ({navigation}) => {
   const [data, setData] = useState(null);
   const {profile, login, isLoginError, isLoginLoading} = useAuth();
   useEffect(() => {
@@ -58,7 +58,9 @@ const InfoScreen = ({navigator}) => {
               <Text color="gray.600">Address: 01 Võ Văn Ngân, TP.HCM, VN</Text>
             </VStack>
           </Box>
-          <Button mt={4}>Edit Profile</Button>
+          <Button mt={4} onPress={() => navigation.navigate('Edit Info')}>
+            Edit Profile
+          </Button>
         </View>
       ) : (
         <View p={4}>
@@ -75,5 +77,3 @@ const InfoScreen = ({navigator}) => {
     </ScrollView>
   );
 };
-
-export default InfoScreen;

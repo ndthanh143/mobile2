@@ -35,4 +35,15 @@ export const userApi = {
       console.log(err);
     }
   },
+
+  updateProfile: async payload => {
+    window.Buffer = window.Buffer || Buffer;
+    console.log('updateProfile', payload);
+    try {
+      const {data} = await axiosInstance.put(`v1/user/update-profile`, payload);
+      return data;
+    } catch (err) {
+      console.log("update Profile error",err);
+    }
+  },
 };

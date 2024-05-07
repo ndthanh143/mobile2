@@ -93,7 +93,7 @@ const ProfileScreen = ({navigation}) => {
               </Flex>
             </Button>
             <Button
-              // onPress={onOpen}
+              onPress={() => navigation.navigate('My Address')}
               mt={2}
               // endIcon={<ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />}
               backgroundColor={'#f9f9f9'}

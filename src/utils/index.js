@@ -1,5 +1,6 @@
 import moment from "moment";
 import { CurrentcyPositions, DATE_FORMAT_DISPLAY, DEFAULT_FORMAT } from "../constants";
+import { useToast } from "native-base";
 
 export function limitCharacters(value, numOfCharacters) {
     if (!value || typeof value !== 'string') {
@@ -78,3 +79,12 @@ export const calculateStars = (starData) => {
     const formattedDifference = givenDate.fromNow();
     return formattedDifference;
 };
+
+export const toastShow = (message) => {
+    const toast = useToast();
+    toast.show({
+      title: message,
+      placement: "top",
+      // Các thuộc tính khác nếu cần
+    });
+  };
