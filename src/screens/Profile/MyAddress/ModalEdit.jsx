@@ -65,6 +65,7 @@ export const ModalEdit = ({modalKey, showModal, setShowModal, dataDetail}) => {
   const {mutate: updateAddress} = useMutation({
     mutationFn: payload => myAddressApi.updateAddress(payload),
     onSuccess: () => {
+      console.log('log');
       setShowModal(false);
       toast.show({
         placement: 'top',

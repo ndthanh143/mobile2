@@ -74,13 +74,16 @@ export const CategoryScreen = ({navigation}) => {
     queryFn: ({pageParam}) =>
       fetchProducts({pageParam, categoryName: selectedCategory}),
     getNextPageParam: (lastPage, allPages) => {
-      return lastPage.nextPage ?? false;
+      console.log('lastPage.nextPage', lastPage.nextPage);
+      return lastPage.nextPage;
     },
     enabled: Boolean(selectedCategory),
   });
 
+  console.log('hasNextPage', hasNextPage);
+
   const handleLoadMore = () => {
-    if (hasNextPage) fetchNextPage();
+    fetchNextPage();
   };
 
   const renderItem = ({item}) =>
@@ -138,7 +141,7 @@ export const CategoryScreen = ({navigation}) => {
   }, [categories]);
 
   useEffect(() => {
-    if (isFetchedProductsCategory) {
+    if (selectedCategory) {
       refetchProducts();
     }
   }, [selectedCategory]);
@@ -189,7 +192,7 @@ export const CategoryScreen = ({navigation}) => {
         ) : (
           <FlatList
             data={data}
-            onEndReached={handleLoadMore}
+            onEndReached={() => hasNextPage && handleLoadMore()}
             onEndReachedThreshold={0.5}
             ListFooterComponent={() =>
               isFetchingNextPage ? (
@@ -203,7 +206,7 @@ export const CategoryScreen = ({navigation}) => {
           />
         )}
 
-        {!data.length && <Text>No products found</Text>}
+        {products && !data.length && <Text>No products found</Text>}
       </VStack>
     </Box>
   );

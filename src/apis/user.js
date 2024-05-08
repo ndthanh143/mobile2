@@ -26,12 +26,7 @@ export const userApi = {
 
   updateProfile: async payload => {
     window.Buffer = window.Buffer || Buffer;
-    console.log('updateProfile', payload);
-    try {
-      const {data} = await axiosInstance.put(`v1/user/update-profile`, payload);
-      return data;
-    } catch (err) {
-      console.log("update Profile error",err);
-    }
+    const {data} = await axiosInstance.put(`v1/user/update-profile`, payload);
+    return data;
   },
 };

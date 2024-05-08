@@ -13,14 +13,15 @@ export function Reviews({productId}) {
   return (
     listReview && (
       <Flex justifyContent="left" alignItems="start" mt={2}>
-        <Heading>Đánh giá sản phẩm</Heading>
+        <Heading mb={4}>Đánh giá sản phẩm</Heading>
         <StarProgress productId={productId} />
         <Box w={'100%'}>
           <FlatList
             data={listReview || []}
             mt={5}
             horizontal
-            renderItem={({item}) => <CardStar data={item} key={item.id} />}
+            renderItem={({item}) => <CardStar data={item} />}
+            keyExtractor={item => item.id.toString()}
           />
         </Box>
       </Flex>

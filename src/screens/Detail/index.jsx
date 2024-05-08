@@ -102,7 +102,7 @@ export function DetailScreen({route, navigation}) {
     detail && (
       <View backgroundColor="white">
         <ScrollView>
-          <Container mx={0} paddingBottom={40}>
+          <Container mx={0} paddingBottom={10}>
             <Image
               source={{
                 uri: `${detail.image}`,
@@ -246,7 +246,9 @@ export function DetailScreen({route, navigation}) {
                   <ChevronRightIcon size="5" mt="0.5" color="#2f2f2f" />
                 </Flex>
               </Button>
-              <Reviews productId={id} />
+              <Box my={4}>
+                <Reviews productId={id} />
+              </Box>
 
               <Flex
                 direction="row"

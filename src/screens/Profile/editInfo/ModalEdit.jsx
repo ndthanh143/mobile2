@@ -3,10 +3,9 @@ import {userApi} from '../../../apis';
 import {Button, FormControl, Input, Modal, useToast} from 'native-base';
 import {useAuth} from '../../../hooks';
 import {useMutation} from '@tanstack/react-query';
-import {toastShow} from '../../../utils';
 
 export const ModalEdit = ({modalKey, showModal, setShowModal}) => {
-  const {profile} = useAuth();
+  const {profile, refetch} = useAuth();
   const [change, setChange] = useState();
   const [changePhone, setChangePhone] = useState();
   const toast = useToast();
@@ -30,6 +29,7 @@ export const ModalEdit = ({modalKey, showModal, setShowModal}) => {
         placement: 'top',
         style: {backgroundColor: data.result ? 'green' : 'red'},
       });
+      refetch();
     },
     onError: err => {
       toast.show({

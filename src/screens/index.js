@@ -13,3 +13,8 @@ export * from './Profile/editInfo';
 export * from './Profile/info';
 export * from './Profile/MyAddress';
 export * from './Favorite';
+export * from './SignInAdmin';
+export * from './Dashboard';
+export * from './AdminOrdersManagement';
+export * from './AdminOrderDetail';
+export * from './AdminProfile';

@@ -40,13 +40,29 @@ export const useAuth = () => {
     onSuccess: () => {
       getToken();
     },
-    onError: (error) => {
-      console.log("login",error);
+    onError: error => {
+      console.log('login', error);
+    },
+  });
+
+  const {
+    mutate: loginAdmin,
+    isError: isLoginAdminError,
+    isFetched: isFetchedAdmin,
+    isPending: isLoginAdminLoading,
+  } = useMutation({
+    mutationFn: payload => authApi.signInAdmin(payload),
+    onSuccess: () => {
+      getToken();
+    },
+    onError: error => {
+      console.log('login', error);
     },
   });
 
   const logout = async () => {
     queryClient.setQueryData(['profile'], null);
+
     await removeToken();
     setToken(null);
   };
@@ -62,6 +78,7 @@ export const useAuth = () => {
   }, [accessToken]);
 
   return {
+    accessToken,
     profile,
     isLoading,
     refetch,
@@ -69,6 +86,10 @@ export const useAuth = () => {
     isFetched,
     login,
     isLoginError,
+    loginAdmin,
+    isLoginAdminError,
+    isFetchedAdmin,
+    isLoginAdminLoading,
     logout,
   };
 };

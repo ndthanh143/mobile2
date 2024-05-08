@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Toast} from 'native-base';
 import {useEffect, useState} from 'react';
 
 export function useFavorite() {
@@ -38,7 +39,6 @@ export function useFavorite() {
         : [...favorites, item];
       await saveFavorite(updatedFavorite);
       setData(updatedFavorite);
-      console.log('Item added to cart');
     } catch (e) {
       console.error('Error adding item to cart', e);
     }
@@ -51,7 +51,7 @@ export function useFavorite() {
       await saveFavorite(updatedCart);
       setData(updatedCart);
 
-      console.log('Item removed from cart');
+      Toast.show({title: 'Item removed', type: 'success'});
     } catch (e) {
       console.error('Error removing item from cart', e);
     }

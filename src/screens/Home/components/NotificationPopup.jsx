@@ -8,8 +8,6 @@ export function NotificationPopup({isOpen, onClose}) {
     queryFn: () => notificationApi.getMyNoti(),
   });
 
-  console.log('data', data);
-
   return (
     <AlertDialog isOpen={isOpen} onClose={onClose}>
       <AlertDialog.Content>

@@ -1,7 +1,6 @@
-import {API_URL, axiosInstance} from '../axios';
+import {axiosInstance} from '../axios';
 import {Buffer} from 'buffer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 
 export const authApi = {
   signIn: async ({phone, password, grant_type = 'user'}) => {
@@ -9,7 +8,6 @@ export const authApi = {
     const base64Credentials =
       Buffer.from(`abc_client:abc123`).toString('base64');
 
-    console.log(phone, password, grant_type);
     const {data} = await axiosInstance.post(
       `api/token`,
       {
@@ -28,6 +26,30 @@ export const authApi = {
 
     return data;
   },
+  signInAdmin: async ({username, password, grant_type = 'password'}) => {
+    window.Buffer = window.Buffer || Buffer;
+    const base64Credentials =
+      Buffer.from(`abc_client:abc123`).toString('base64');
+
+    const {data} = await axiosInstance.post(
+      `api/token`,
+      {
+        username,
+        password,
+        grant_type,
+      },
+      {
+        headers: {
+          Authorization: 'Basic ' + base64Credentials,
+        },
+      },
+    );
+
+    await AsyncStorage.setItem('access_token', data.access_token);
+
+    return data;
+  },
+
   requestForgotPassword: async payload => {
     const {data} = await axiosInstance.post(
       'v1/account/request_forget_password',

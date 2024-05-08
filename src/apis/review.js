@@ -38,6 +38,6 @@ export const reviewApi = {
       {},
     );
 
-    return data.data.content;
+    return data.data.content || [];
   },
 };

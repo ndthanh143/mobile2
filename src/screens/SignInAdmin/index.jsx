@@ -5,28 +5,26 @@ import {
   Center,
   Divider,
   FormControl,
-  HStack,
   Heading,
   Input,
-  Link,
-  Select,
+  Spinner,
+  Text,
   Toast,
   VStack,
   WarningOutlineIcon,
 } from 'native-base';
-import {Text} from 'react-native';
 import {object, string} from 'yup';
 import {useForm, Controller} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useAuth} from '../../hooks';
 
 const schema = object({
-  phone: string().required('Vui lòng nhập số điện thoại'),
+  username: string().required('Vui lòng nhập username'),
   password: string().required('Vui lòng nhập mật khẩu'),
   grant_type: string().required(),
 });
 
-export function SignInScreen({navigation}) {
+export function SignInAdminScreen({navigation}) {
   const {
     control,
     handleSubmit,
@@ -34,26 +32,27 @@ export function SignInScreen({navigation}) {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      phone: '0965456023',
+      username: 'superAdmin',
       password: '123456',
-      grant_type: 'user',
+      grant_type: 'password',
     },
   });
 
-  const {profile, login, isLoginError, isLoginLoading} = useAuth();
+  const {profile, loginAdmin, isLoginAdminLoading, isLoginAdminError, logout} =
+    useAuth();
 
   const onSubmit = data => {
-    login(data);
+    loginAdmin(data);
   };
 
   useEffect(() => {
-    if (profile && !profile.isSuperAdmin) {
-      navigation.navigate('Home');
+    if (profile && profile.isSuperAdmin) {
+      navigation.navigate('Dashboard');
       Toast.show({
         title: 'Đăng nhập thành công',
       });
     }
-  }, [profile]);
+  }, [profile, loginAdmin, isLoginAdminLoading, logout, navigation]);
 
   return (
     !profile && (
@@ -66,22 +65,17 @@ export function SignInScreen({navigation}) {
             _dark={{
               color: 'warmGray.50',
             }}>
-            Đăng nhập
+            Đăng nhập quản trị viên
           </Heading>
-          <Heading
-            mt="1"
-            _dark={{
-              color: 'warmGray.200',
-            }}
-            color="coolGray.600"
-            fontWeight="medium"
-            size="xs">
-            Đăng nhập để tiếp tục!
-          </Heading>
+          {isLoginAdminError && ( // Render error message if there's an error
+            <Text color="red.500" fontSize="xs">
+              Tài khoản hoặc mật khẩu không chính xác
+            </Text>
+          )}
 
           <VStack space={3} mt="5">
             <FormControl isInvalid={errors.phone}>
-              <FormControl.Label>Số điện thoại hoặc Email</FormControl.Label>
+              <FormControl.Label>Tên tài khoản</FormControl.Label>
               <Controller
                 isInvalid={errors.phone}
                 control={control}
@@ -92,7 +86,7 @@ export function SignInScreen({navigation}) {
                     value={value}
                   />
                 )}
-                name="phone"
+                name="username"
               />
               <FormControl.ErrorMessage
                 leftIcon={<WarningOutlineIcon size="xs" />}>
@@ -118,63 +112,27 @@ export function SignInScreen({navigation}) {
                 leftIcon={<WarningOutlineIcon size="xs" />}>
                 {errors.password?.message}
               </FormControl.ErrorMessage>
-
-              {isLoginError && ( // Render error message if there's an error
-                <Text color="red.500" fontSize="xs">
-                  Tài khoản hoặc mật khẩu không chính xác
-                </Text>
-              )}
             </FormControl>
-            <Link
-              _text={{
-                fontSize: 'xs',
-                fontWeight: '500',
-                color: 'indigo.500',
-              }}
-              alignSelf="flex-end"
-              mt="1"
-              onPress={() => navigation.navigate('Forgot Password')}>
-              Quên mật khẩu?
-            </Link>
             <Button
               mt="2"
               colorScheme="red"
               borderRadius="3xl"
-              isLoading={isLoginLoading}
-              isDisabled={isLoginLoading}
+              isLoading={isLoginAdminLoading}
+              isDisabled={isLoginAdminLoading}
               onPress={handleSubmit(onSubmit)}>
               Đăng nhập
             </Button>
-            <HStack mt="6" justifyContent="center">
-              <Text
-                fontSize="sm"
-                color="coolGray.600"
-                _dark={{
-                  color: 'warmGray.200',
-                }}>
-                Chưa có tài khoản.{' '}
-              </Text>
-              <Link
-                _text={{
-                  color: 'indigo.500',
-                  fontWeight: 'medium',
-                  fontSize: 'sm',
-                }}
-                onPress={() => {
-                  navigation.navigate('Sign Up');
-                }}>
-                Đăng ký
-              </Link>
-            </HStack>
+
             <Divider my={2} />
+
             <Button
               mt="2"
               colorScheme="blue"
               borderRadius="3xl"
               onPress={() => {
-                navigation.navigate('Sign In Admin');
+                navigation.navigate('Sign In');
               }}>
-              Đăng nhập với tư cách quản trị viên
+              Đăng nhập người dùng
             </Button>
           </VStack>
         </Box>

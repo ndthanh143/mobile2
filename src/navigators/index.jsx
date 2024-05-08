@@ -1,7 +1,11 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
+  AdminOrderDetail,
+  AdminOrdersManagement,
+  AdminProfileScreen,
   CartScreen,
   CategoryScreen,
+  DashboardScreen,
   EditInfoScreen,
   FavoriteScreen,
   ForgotPasswordScreen,
@@ -12,6 +16,7 @@ import {
   PaymentMethodScreen,
   PaymentScreen,
   SearchScreen,
+  SignInAdminScreen,
   SignInScreen,
   SignUpScreen,
 } from '../screens';
@@ -28,8 +33,15 @@ export const Navigators = () => {
       <Stack.Screen name="Category" component={CategoryScreen} />
       <Stack.Screen name="Forgot Password" component={ForgotPasswordScreen} />
       <Stack.Screen name="Sign Up" component={SignUpScreen} />
+      <Stack.Screen
+        name="Admin Order Management"
+        component={AdminOrdersManagement}
+      />
+      <Stack.Screen name="Admin Profile" component={AdminProfileScreen} />
+      <Stack.Screen name="Admin Order Detail" component={AdminOrderDetail} />
       <Stack.Screen name="Search" component={SearchScreen} />
       <Stack.Screen name="Sign In" component={SignInScreen} />
+      <Stack.Screen name="Sign In Admin" component={SignInAdminScreen} />
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Detail" component={DetailScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -43,6 +55,7 @@ export const Navigators = () => {
       <Stack.Screen name="Edit Info" component={EditInfoScreen} />
       <Stack.Screen name="My Address" component={MyAddressScreen} />
       <Stack.Screen name="Favorite" component={FavoriteScreen} />
+      <Stack.Screen name="Dashboard" component={DashboardScreen} />
     </Stack.Navigator>
   );
 };

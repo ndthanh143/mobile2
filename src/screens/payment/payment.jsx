@@ -8,6 +8,7 @@ import {
   ScrollView,
   Select,
   Text,
+  Toast,
   VStack,
   View,
 } from 'native-base';
@@ -25,9 +26,6 @@ export function PaymentScreen({route, navigation}) {
   const {data} = useCart();
   const [sandbox, setSanbox] = useState();
 
-  // console.log('profile', profile);
-
-  // console.log('method', method);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [order, setOrder] = useState();
 
@@ -51,14 +49,16 @@ export function PaymentScreen({route, navigation}) {
       setSanbox(sanboxUrl);
     },
     onError: error => {
-      console.log('error', error);
+      Toast.show({
+        title: 'Error',
+        status: 'error',
+      });
     },
   });
 
   const {mutate, isPending} = useMutation({
     mutationFn: orderApi.createOrder,
     onSuccess: data => {
-      console.log('data', data);
       setOrder(data);
       if (methodValues[method] === 0) {
         navigation.navigate('Order Success', {
@@ -73,10 +73,12 @@ export function PaymentScreen({route, navigation}) {
           urlSuccess: 'http://localhost:8081/success',
         });
       }
-      console.log('Order created');
     },
     onError: error => {
-      console.log('error', error);
+      Toast.show({
+        title: 'Error',
+        status: 'error',
+      });
     },
   });
 
@@ -99,7 +101,6 @@ export function PaymentScreen({route, navigation}) {
   };
 
   const handleNavigateStateChange = state => {
-    console.log('state', state);
     if (state.url.includes('cancel')) {
       setSanbox(null);
     }

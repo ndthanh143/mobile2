@@ -42,7 +42,6 @@ export function ForgotPasswordScreen({navigation}) {
   const {mutate: mutateRequest, isPending: isPendingRequest} = useMutation({
     mutationFn: payload => authApi.requestForgotPassword(payload),
     onSuccess: data => {
-      console.log('data', data);
       setIdHash(data.data.idHash);
       setShowOTPModal(true);
     },
