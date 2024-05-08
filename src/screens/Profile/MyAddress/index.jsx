@@ -1,4 +1,12 @@
-import {Button, FlatList, Flex, Heading, Icon, Text} from 'native-base';
+import {
+  Button,
+  FlatList,
+  Flex,
+  Heading,
+  Icon,
+  Spinner,
+  Text,
+} from 'native-base';
 import {myAddressApi} from '../../../apis/myAddress';
 import Card from './card';
 import {useQuery} from '@tanstack/react-query';
@@ -26,18 +34,30 @@ export const MyAddressScreen = ({navigation}) => {
       <Heading size="lg" m={4}>
         Địa chỉ
       </Heading>
-      <FlatList
-        data={MyAddress?.content}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({item}) => (
-          <Card
-            data={item}
-            navigation={navigation}
-            showModal={showModal}
-            setShowModal={setShowModal}
-          />
-        )}
-      />
+      {isLoading ? (
+        <Flex
+          justifyContent="center"
+          alignItems="center"
+          flex={1}
+          backgroundColor="white">
+          <Spinner size="lg" />
+        </Flex>
+      ) : (
+        <FlatList
+          data={MyAddress?.content}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({item}) => (
+            <Card
+              data={item}
+              navigation={navigation}
+              showModal={showModal}
+              setShowModal={setShowModal}
+              refetchMyAddress={refetchMyAddress()}
+            />
+          )}
+        />
+      )}
+      ;
       <Button
         w={'100%'}
         backgroundColor={'white'}
@@ -56,7 +76,11 @@ export const MyAddressScreen = ({navigation}) => {
           Thêm địa chỉ mới
         </Text>
       </Button>
-      <ModalEdit showModal={showModal} setShowModal={setShowModal} />
+      <ModalEdit
+        showModal={showModal}
+        setShowModal={setShowModal}
+        refetchMyAddress={refetchMyAddress()}
+      />
     </Flex>
   );
 };

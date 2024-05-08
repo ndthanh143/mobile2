@@ -16,7 +16,13 @@ import {toastShow} from '../../../utils';
 import {myAddressApi} from '../../../apis/myAddress';
 import {Controller, useForm} from 'react-hook-form';
 
-export const ModalEdit = ({modalKey, showModal, setShowModal, dataDetail}) => {
+export const ModalEdit = ({
+  modalKey,
+  showModal,
+  setShowModal,
+  dataDetail,
+  refetchMyAddress,
+}) => {
   const [formData, setData] = useState({});
   const {
     control,
@@ -31,10 +37,15 @@ export const ModalEdit = ({modalKey, showModal, setShowModal, dataDetail}) => {
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedWard, setSelectedWard] = useState('');
 
-  const {mutate: createAddress, data} = useMutation({
+  const {
+    mutate: createAddress,
+    data,
+    isPending: createLoading,
+  } = useMutation({
     mutationFn: payload => myAddressApi.createAddress(payload),
     onSuccess: () => {
       setShowModal(false);
+      refetchMyAddress;
       toast.show({
         placement: 'top',
         render: () => {
@@ -62,9 +73,10 @@ export const ModalEdit = ({modalKey, showModal, setShowModal, dataDetail}) => {
     },
   });
 
-  const {mutate: updateAddress} = useMutation({
+  const {mutate: updateAddress, isPending: updateLoading} = useMutation({
     mutationFn: payload => myAddressApi.updateAddress(payload),
     onSuccess: () => {
+      refetchMyAddress;
       setShowModal(false);
       toast.show({
         placement: 'top',
@@ -243,7 +255,7 @@ export const ModalEdit = ({modalKey, showModal, setShowModal, dataDetail}) => {
               selectedValue={
                 dataDetail?.districtInfo
                   ? dataDetail.districtInfo.id
-                  : selectedProvince
+                  : selectedDistrict
               }
               minWidth="200"
               _selectedItem={{
@@ -275,7 +287,7 @@ export const ModalEdit = ({modalKey, showModal, setShowModal, dataDetail}) => {
             </FormControl.Label>
             <Select
               selectedValue={
-                dataDetail?.wardInfo ? dataDetail.wardInfo.id : selectedProvince
+                dataDetail?.wardInfo ? dataDetail.wardInfo.id : selectedWard
               }
               minWidth="200"
               _selectedItem={{
@@ -310,7 +322,10 @@ export const ModalEdit = ({modalKey, showModal, setShowModal, dataDetail}) => {
               Đóng
             </Button>
 
-            <Button colorScheme="red" onPress={() => onSubmit()}>
+            <Button
+              colorScheme="red"
+              onPress={() => onSubmit()}
+              isLoading={updateLoading || createLoading}>
               Xác nhận
             </Button>
           </Button.Group>
