@@ -22,7 +22,7 @@ export function FavoriteScreen({navigation}) {
         <Heading padding={4} textAlign="center">
           Danh sách yêu thích
         </Heading>
-        <VStack space={4} alignItems="center" mt="4">
+        <VStack space={4} alignItems="center" mt="4" mb="4">
           {data.length > 0 ? (
             data.map(product => (
               <Box

@@ -1,52 +1,15 @@
-import {Image, Dimensions, View, StyleSheet} from 'react-native';
-import {
-  Actionsheet,
-  Box,
-  Button,
-  Center,
-  ChevronRightIcon,
-  Container,
-  Flex,
-  Heading,
-  Icon,
-  NativeBaseProvider,
-  Pressable,
-  Progress,
-  ScrollView,
-  Select,
-  Stack,
-  Text,
-  useDisclose,
-} from 'native-base';
-import {productApi} from '../../apis';
+import {Flex, Icon, Progress, Text} from 'native-base';
 import {useQuery} from '@tanstack/react-query';
-let {height, width} = Dimensions.get('window');
 import {AirbnbRating} from 'react-native-ratings';
-import {calculateStars, limitCharacters} from '../../utils';
-import Card from '../../container/card';
-import {useCart} from '../../hooks';
-import {useState} from 'react';
-import {LoadingContainer} from '../../components';
-import {reviewApi} from '../../apis/review';
-import {MaterialCommunityIcons, MaterialIcons} from '@expo/vector-icons';
+import {calculateStars} from '../../../utils';
+import {reviewApi} from '../../../apis/review';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 
-export function StarProgress({route, navigation}) {
-  // const {id} = route.params;
-  const id = 7022431260213248;
-
-  const {addItemToCart} = useCart();
-  const [color, setColor] = useState();
-
+export function StarProgress({productId}) {
   const {data: starData} = useQuery({
-    queryKey: ['starData'],
-    queryFn: () => reviewApi.starListReview(id),
+    queryKey: ['starData', productId],
+    queryFn: () => reviewApi.starListReview(productId),
   });
-
-  const {isOpen, onOpen, onClose} = useDisclose();
-
-  const handleAddToCart = async () => {
-    await addItemToCart({...detail, variant: color});
-  };
 
   const {averageRating, ratingPercentages} = calculateStars(starData);
 

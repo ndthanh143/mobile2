@@ -8,6 +8,7 @@ import {
   Input,
   Link,
   Modal,
+  Toast,
   VStack,
 } from 'native-base';
 import {Text} from 'react-native';
@@ -33,9 +34,12 @@ export function ForgotPasswordScreen({navigation}) {
     formState: {errors},
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      email: 'thanhnduy143@gmail.com',
+    },
   });
 
-  const {mutate} = useMutation({
+  const {mutate: mutateRequest, isPending: isPendingRequest} = useMutation({
     mutationFn: payload => authApi.requestForgotPassword(payload),
     onSuccess: data => {
       setIdHash(data.data.idHash);
@@ -43,18 +47,21 @@ export function ForgotPasswordScreen({navigation}) {
     },
     onError: () => {},
   });
-  console.log('idHash', idHash);
 
-  const {mutate: mutateOtp} = useMutation({
+  const {mutate: mutateOtp, isPending: isPendingConfirmOtp} = useMutation({
     mutationFn: payload => authApi.confirmOtpForgetPassword(payload),
     onSuccess: () => {
+      Toast.show({
+        title: 'Đặt lại mật khẩu mới thành công',
+        variant: 'success',
+      });
       navigation.navigate('Sign In');
     },
     onError: () => {},
   });
 
   const onSubmit = async data => {
-    mutate(data);
+    mutateRequest(data);
   };
 
   const handleSubmitOtp = () => {
@@ -98,6 +105,7 @@ export function ForgotPasswordScreen({navigation}) {
             mt="2"
             colorScheme="red"
             borderRadius="3xl"
+            isLoading={isPendingRequest}
             onPress={handleSubmit(onSubmit)}>
             Gửi yêu cầu
           </Button>
@@ -137,7 +145,11 @@ export function ForgotPasswordScreen({navigation}) {
           </Modal.Body>
           <Modal.Footer>
             <Button.Group space={2}>
-              <Button colorScheme="red" mr={3} onPress={handleSubmitOtp}>
+              <Button
+                colorScheme="red"
+                mr={3}
+                onPress={handleSubmitOtp}
+                isLoading={isPendingConfirmOtp}>
                 Xác nhận
               </Button>
             </Button.Group>

@@ -21,7 +21,7 @@ import {
   View,
 } from 'native-base';
 import {useDebounce} from '../../hooks';
-import {EmptyData, Footer} from '../../components';
+import {EmptyData} from '../../components';
 
 export const SearchScreen = ({navigation}) => {
   const [searchText, setSearchText] = useState('');
@@ -132,7 +132,6 @@ export const SearchScreen = ({navigation}) => {
           )}
         </ScrollView>
       </View>
-      <Footer />
     </Flex>
   );
 };

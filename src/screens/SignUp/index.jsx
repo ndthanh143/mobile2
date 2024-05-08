@@ -9,18 +9,16 @@ import {
   VStack,
   Text,
   Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  ScrollView,
+  Flex,
+  Toast,
 } from 'native-base';
 import {useForm, Controller} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {useMutation} from '@tanstack/react-query';
 import {userApi} from '../../apis';
+import DateTimePicker from '@react-native-community/datetimepicker'; // Import DateTimePicker
+import moment from 'moment';
 
 const schema = yup.object().shape({
   fullName: yup.string().required('Họ và tên không được bỏ trống'),
@@ -37,24 +35,44 @@ export function SignUpScreen({navigation}) {
   const {
     control,
     handleSubmit,
-    register,
     formState: {errors},
+    watch,
+    reset,
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      fullName: 'Nguyễn Đức Thanh',
+      birthday: '1999-03-15',
+      phone: '0987654321',
+      password: 'thanh123',
+      email: 'nguyenduythanh.spkt@gmail.com',
+    },
   });
 
+  const [showDatePicker, setShowDatePicker] = useState(false); // State to show/hide the DatePicker
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [otp, setOtp] = useState('');
 
-  const {mutate, data: registerData} = useMutation({
+  const {
+    mutate: mutateSignUp,
+    isPending: isPendingSignUp,
+    data: registerData,
+  } = useMutation({
     mutationFn: payload => userApi.signUp(payload),
-    onSuccess: () => {
+    onSuccess: payload => {
+      console.log('payload', payload);
       setShowOTPModal(true);
+      reset();
     },
-    onError: () => {},
+    onError: () => {
+      Toast.show({
+        title: 'Đăng ký thất bại vui lòng thử lại sau',
+        status: 'error',
+      });
+    },
   });
 
-  console.log(registerData);
   const {mutate: mutateOtp} = useMutation({
     mutationFn: payload => userApi.confirmOtp(payload),
     onSuccess: () => {
@@ -62,19 +80,19 @@ export function SignUpScreen({navigation}) {
     },
   });
 
-  const onSubmit = data => {
-    const {birthday, ...rest} = data;
-
-    console.log('data', data);
-
-    mutate({...rest});
-  };
-
   const handleSubmitOtp = () => {
     mutateOtp({
       otp,
       idHash: 'eJwBIADf//QWKgvmxZIzqti9ezDJOA2zAFa0es3cGrifp4JlymnBBYoQew==',
     });
+  };
+
+  const onChangeDate = (event, selectedDate) => {
+    const currentDate = selectedDate || new Date(watch('birthday'));
+    setShowDatePicker(false);
+
+    const birthdayValue = moment(currentDate).format('DD/MM/yyyy');
+    setValue('birthday', birthdayValue); // Update React Hook Form
   };
 
   return (
@@ -109,20 +127,32 @@ export function SignUpScreen({navigation}) {
               )}
               name="fullName"
             />
-            <Text color="red" fontSize="xs">
+            <Text color="red.500" fontSize="xs">
               {errors.fullName?.message}
             </Text>
           </FormControl>
           <FormControl isInvalid={errors.birthday}>
             <FormControl.Label>Ngày sinh</FormControl.Label>
-            <Controller
-              control={control}
-              render={({field: {onChange, onBlur, value}}) => (
-                <Input onChangeText={onChange} onBlur={onBlur} value={value} />
-              )}
-              name="birthday"
-            />
-            <Text color="red" fontSize="xs">
+            <Flex direction="row" style={{gap: 10}}>
+              <Controller
+                control={control}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <Input
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    value={value}
+                    readOnly
+                    flex={1}
+                  />
+                )}
+                name="birthday"
+              />
+              <Button onPress={() => setShowDatePicker(true)}>
+                Select Date
+              </Button>
+            </Flex>
+
+            <Text color="red.500" fontSize="xs">
               {errors.birthday?.message}
             </Text>
           </FormControl>
@@ -135,7 +165,7 @@ export function SignUpScreen({navigation}) {
               )}
               name="phone"
             />
-            <Text color="red" fontSize="xs">
+            <Text color="red.500" fontSize="xs">
               {errors.phone?.message}
             </Text>
           </FormControl>
@@ -148,7 +178,7 @@ export function SignUpScreen({navigation}) {
               )}
               name="email"
             />
-            <Text color="red" fontSize="xs">
+            <Text color="red.500" fontSize="xs">
               {errors.email?.message}
             </Text>
           </FormControl>
@@ -157,11 +187,16 @@ export function SignUpScreen({navigation}) {
             <Controller
               control={control}
               render={({field: {onChange, onBlur, value}}) => (
-                <Input onChangeText={onChange} onBlur={onBlur} value={value} />
+                <Input
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  type="password"
+                />
               )}
               name="password"
             />
-            <Text color="red" fontSize="xs">
+            <Text color="red.500" fontSize="xs">
               {errors.password?.message}
             </Text>
           </FormControl>
@@ -170,7 +205,7 @@ export function SignUpScreen({navigation}) {
             mb="10"
             colorScheme="red"
             borderRadius="3xl"
-            onPress={handleSubmit(onSubmit)}>
+            onPress={handleSubmit(mutateSignUp)}>
             Đăng ký
           </Button>
         </VStack>
@@ -191,7 +226,11 @@ export function SignUpScreen({navigation}) {
             </Modal.Body>
             <Modal.Footer>
               <Button.Group space={2}>
-                <Button colorScheme="red" mr={3} onPress={handleSubmitOtp}>
+                <Button
+                  colorScheme="red"
+                  mr={3}
+                  onPress={handleSubmitOtp}
+                  isLoading={isPendingSignUp}>
                   Submit
                 </Button>
               </Button.Group>
@@ -199,6 +238,15 @@ export function SignUpScreen({navigation}) {
           </Modal.Content>
         </Modal>
       </Box>
+      {showDatePicker && (
+        <DateTimePicker
+          value={watch('birthday') ? new Date(watch('birthday')) : new Date()}
+          mode="date"
+          display="default"
+          maximumDate={new Date()}
+          onChange={onChangeDate}
+        />
+      )}
     </Center>
   );
 }

@@ -7,6 +7,7 @@ import {
   Flex,
   FlatList,
   Divider,
+  Skeleton,
 } from 'native-base';
 import {Text as Text2} from 'native-base';
 
@@ -17,12 +18,12 @@ import {Footer} from '../../components';
 import {AppBar} from './components';
 
 export function HomeScreen({navigation}) {
-  const {data: products, isLoading} = useQuery({
+  const {data: products, isLoading: isLoadingProducts} = useQuery({
     queryKey: ['products'],
     queryFn: () => productApi.getProducts(),
   });
 
-  const {data: productsTop10} = useQuery({
+  const {data: productsTop10, isLoading: isLoadingProductsTop10} = useQuery({
     queryKey: ['products-top-10'],
     queryFn: () => productApi.getProductTop10(),
   });
@@ -44,17 +45,22 @@ export function HomeScreen({navigation}) {
             mb={2}
           />
         </Box>
-        {isLoading ? (
-          <Spinner color="red.500" size="lg" />
-        ) : (
-          <Box padding={4}>
-            <Text2
-              fontSize="2xl"
-              fontWeight="extrabold"
-              textAlign="center"
-              py={2}>
-              Top 10 Sản phẩm bán chạy
-            </Text2>
+
+        <Box padding={4}>
+          <Text2
+            fontSize="2xl"
+            fontWeight="extrabold"
+            textAlign="center"
+            py={2}>
+            Top 10 Sản phẩm bán chạy
+          </Text2>
+          {isLoadingProductsTop10 ? (
+            <Box borderRadius={3} overflow="hidden">
+              <Skeleton lines={2} my={2} height={150} />
+              <Skeleton.Text lines={1} my={2} />
+              <Skeleton.Text lines={3} my={2} />
+            </Box>
+          ) : (
             <FlatList
               nestedScrollEnabled
               data={productsTop10}
@@ -71,19 +77,27 @@ export function HomeScreen({navigation}) {
               horizontal
               showsHorizontalScrollIndicator={false}
             />
-            <Divider maxW={100} my={4} mx="auto" />
-            <Text2
-              fontSize="2xl"
-              fontWeight="extrabold"
-              textAlign="center"
-              py={2}>
-              Danh sách sản phẩm
-            </Text2>
-            {products?.map(item => (
+          )}
+
+          <Divider maxW={100} my={4} mx="auto" />
+          <Text2
+            fontSize="2xl"
+            fontWeight="extrabold"
+            textAlign="center"
+            py={2}>
+            Danh sách sản phẩm
+          </Text2>
+          {isLoadingProductsTop10 ? (
+            <Box borderRadius={3} overflow="hidden">
+              <Skeleton lines={2} my={2} height={150} />
+              <Skeleton.Text px={4} lines={2} my={2} />
+            </Box>
+          ) : (
+            products?.map(item => (
               <Card data={item} navigation={navigation} key={item.id} />
-            ))}
-          </Box>
-        )}
+            ))
+          )}
+        </Box>
       </ScrollView>
       <Footer />
     </Flex>
