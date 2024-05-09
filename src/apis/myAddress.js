@@ -7,20 +7,15 @@ const BASE_URL = 'v1/user';
 
 export const myAddressApi = {
   getAddress: async () => {
-    try {
-      const token = await AsyncStorage.getItem('access_token');
+    const token = await AsyncStorage.getItem('access_token');
 
-      const {data} = await axiosInstance.get('v1/address/get-myAddress', {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      });
+    const {data} = await axiosInstance.get('v1/address/get-myAddress', {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    });
 
-      return data.data;
-    } catch (error) {
-      console.log(error);
-      return {};
-    }
+    return data.data;
   },
   getNation: async query => {
     const token = await AsyncStorage.getItem('access_token');
@@ -69,8 +64,7 @@ export const myAddressApi = {
     return data.data;
   },
   deleteAddress: async id => {
-    const {data} = await axiosInstance.delete(`/v1/address/delete/${id}`);
-
-    return data.data;
+    console.log('id ', id);
+    return axiosInstance.delete(`/v1/address/delete/${id}`);
   },
 };
