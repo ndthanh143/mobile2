@@ -65,22 +65,22 @@ const Card = ({data, colorCard, navigation, refetchMyAddress}) => {
     deleteAddress(data.id);
   };
   return (
-    <Pressable onPress={() => setShowModal(true)}>
-      <Center flex={1}>
-        <Box
-          borderBottomWidth="2.5"
-          // borderRadius={'xl'}
-          _dark={{
-            borderColor: 'muted.400',
-          }}
-          borderBottomColor="muted.200"
-          px={'20px'}
-          py={'10px'}
-          w={'100%'}
-          // h={'100px'}
-          bgColor={'white'}>
-          <HStack>
-            <VStack w={'290px'}>
+    <Center flex={1}>
+      <Box
+        borderBottomWidth="2.5"
+        // borderRadius={'xl'}
+        _dark={{
+          borderColor: 'muted.400',
+        }}
+        borderBottomColor="muted.200"
+        px={'20px'}
+        py={'10px'}
+        w={'100%'}
+        // h={'100px'}
+        bgColor={'white'}>
+        <HStack>
+          <Pressable onPress={() => setShowModal(true)}>
+            <VStack w={'260px'}>
               <HStack alignItems={'flex-end'}>
                 <Text fontSize={'lg'} bold>
                   {data.name}
@@ -99,31 +99,22 @@ const Card = ({data, colorCard, navigation, refetchMyAddress}) => {
                 {data.provinceInfo.name}
               </Text>
             </VStack>
-            <VStack>
-              <Pressable
-                cursor="pointer"
-                p="3"
-                flex={1}
-                onPress={(e, record) => {
-                  e.stopPropagation();
-                  // onCLick();
-                  // deleteAddress(data.id);
-                  setIsOpen(true);
-                }}
-                h={'100%'}
-                w={'50px'}>
-                <Center>
-                  <Icon
-                    as={<MaterialIcons name="delete-outline" />}
-                    size="2xl"
-                    color={'red.500'}
-                  />
-                </Center>
-              </Pressable>
-            </VStack>
-          </HStack>
-        </Box>
-      </Center>
+          </Pressable>
+          <Button
+            backgroundColor={'#ffffff'}
+            onPress={e => {
+              e.stopPropagation();
+              onCLick();
+            }}>
+            <Icon
+              as={<MaterialIcons name="delete-outline" />}
+              size="3xl"
+              color={'red.500'}
+            />
+          </Button>
+        </HStack>
+      </Box>
+
       <ModalEdit
         showModal={showModal}
         setShowModal={setShowModal}
@@ -153,7 +144,7 @@ const Card = ({data, colorCard, navigation, refetchMyAddress}) => {
           </AlertDialog.Footer>
         </AlertDialog.Content>
       </AlertDialog>
-    </Pressable>
+    </Center>
   );
 };
 

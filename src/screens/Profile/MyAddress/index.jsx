@@ -79,7 +79,7 @@ export const MyAddressScreen = ({navigation}) => {
       <ModalEdit
         showModal={showModal}
         setShowModal={setShowModal}
-        refetchMyAddress={refetchMyAddress()}
+        refetchMyAddress={refetchMyAddress}
       />
     </Flex>
   );

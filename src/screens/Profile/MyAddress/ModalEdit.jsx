@@ -45,7 +45,7 @@ export const ModalEdit = ({
     mutationFn: payload => myAddressApi.createAddress(payload),
     onSuccess: () => {
       setShowModal(false);
-      refetchMyAddress;
+      refetchMyAddress();
       toast.show({
         placement: 'top',
         render: () => {
@@ -76,7 +76,7 @@ export const ModalEdit = ({
   const {mutate: updateAddress, isPending: updateLoading} = useMutation({
     mutationFn: payload => myAddressApi.updateAddress(payload),
     onSuccess: () => {
-      refetchMyAddress;
+      refetchMyAddress();
       setShowModal(false);
       toast.show({
         placement: 'top',
